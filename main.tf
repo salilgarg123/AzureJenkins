@@ -134,7 +134,7 @@ resource "kubernetes_service" "jenkins_service" {
     }
     type = "ClusterIP"
     cluster_ip = "10.96.0.96"
-    annotations = 
+    annotations = service.beta.kubernetes.io/azure-load-balancer-internal: "true""
   }
 }
 
