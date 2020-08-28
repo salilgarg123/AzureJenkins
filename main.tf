@@ -4,7 +4,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   resource_group_name = var.resource_group_name
   dns_prefix          = var.dns_prefix
   private_cluster_enabled = true
-
+/*
   linux_profile {
     admin_username = "ubuntu"
 
@@ -12,7 +12,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
       key_data = file(var.ssh_public_key)
     }
   }
-
+*/
   identity {
     type = "SystemAssigned"
   }
