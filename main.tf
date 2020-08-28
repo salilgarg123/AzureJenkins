@@ -41,7 +41,10 @@ resource "azurerm_kubernetes_cluster" "k8s" {
         client_id     = var.client_id
         client_secret = var.client_secret
     } */
+  private_cluster_enabled {
+    enabled = true
 
+  }
   addon_profile {
     oms_agent {
       enabled = false
@@ -51,7 +54,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   network_profile {
     load_balancer_sku = "Standard"
     network_plugin    = "azure"
-    private_cluster_enabled = true
+  
   }
 
   tags = {
