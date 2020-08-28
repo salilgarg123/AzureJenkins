@@ -37,10 +37,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   network_profile {
     load_balancer_sku = "Standard"
-    load_balancer_profile {
-      outbound_ports_allocated  = "4000"
-      managed_outbound_ip_count = "4"
-    }
     network_plugin     = "azure"
     service_cidr       = "10.1.0.0/18"
     docker_bridge_cidr = "172.17.0.1/16"
