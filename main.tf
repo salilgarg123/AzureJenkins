@@ -5,7 +5,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix          = var.dns_prefix
   private_cluster_enabled = true
 
-
   linux_profile {
     admin_username = "ubuntu"
 
@@ -29,11 +28,6 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     vm_size        = "Standard_D2_v2"
     vnet_subnet_id = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-app-centralus-001/subnets/snet-dev-build-centralus-001"
   }
-
-  /*     service_principal {
-        client_id     = var.client_id
-        client_secret = var.client_secret
-    } */
 
   addon_profile {
     oms_agent {
