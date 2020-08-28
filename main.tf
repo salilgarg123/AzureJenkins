@@ -34,6 +34,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     name       = "agentpool"
     node_count = var.agent_count
     vm_size    = "Standard_D2_v2"
+    vnet_subnet_id = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-app-centralus-001/subnets/snet-dev-build-centralus-001"
   }
 
   /*     service_principal {
@@ -49,7 +50,10 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   network_profile {
     load_balancer_sku = "Standard"
-    network_plugin    = "kubenet"
+    network_plugin    = "azure"
+    docker_bridge_address = "172.17.0.1/16"
+    private_cluster_enabled = true
+    service_cidr   = "10.0.16.0/20"
   }
 
   tags = {
