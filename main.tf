@@ -89,7 +89,7 @@ resource "kubernetes_service" "jenkins_service" {
       target_port = 8080
     }
     type       = "ClusterIP"
-    cluster_ip = "10.96.0.96"
+    cluster_ip = "10.1.0.11"
   }
 }
 
