@@ -5,6 +5,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix          = var.dns_prefix
   private_cluster_enabled = true
 
+
   linux_profile {
     admin_username = "ubuntu"
 
@@ -43,6 +44,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   network_profile {
     load_balancer_sku = "Standard"
     network_plugin    = "azure"
+    service_cidr =	"10.1.0.0/18"
+    docker_bridge_cidr =	"172.17.0.1/16"
+    dns_service_ip =	"10.1.0.10"
   }
 
   tags = {
