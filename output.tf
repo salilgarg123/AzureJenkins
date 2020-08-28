@@ -1,34 +1,27 @@
-/* output "sp_password" {
-  value = module.service_principal.principal_pw
-  sensitive = true
-} */
-
-output "display_name" {
-  description = "The Display Name of the Azure Active Directory Application associated with this Service Principal."
-  value       = module.service_principal.service_principal_id.display_name
+output "client_key" {
+  value = azurerm_kubernetes_cluster.k8s.kube_config.0.client_key
 }
 
-output "application_id" {
-  description = "Application ID (appId) for the Service Principal"
-  value       = module.service_principal.service_principal_id.application_id 
+output "client_certificate" {
+  value = azurerm_kubernetes_cluster.k8s.kube_config.0.client_certificate
 }
 
-output "object_id" {
-  description = "The Service Principal's Object ID"
-  value       = module.service_principal.service_principal_id.object_id
+output "cluster_ca_certificate" {
+  value = azurerm_kubernetes_cluster.k8s.kube_config.0.cluster_ca_certificate
 }
 
-/* output "login_server" {
-  description = "The URL that can be used to log into the container registry."
-  value       = module.service_principal
-} */
-
-/* output "admin_username" {
-  description = "The Username associated with the Container Registry Admin account - if the admin account is enabled."
-  value       = module.trg_acr.admin_username
+output "cluster_username" {
+  value = azurerm_kubernetes_cluster.k8s.kube_config.0.username
 }
 
-output "admin_password" {
-  description = "The Password associated with the Container Registry Admin account - if the admin account is enabled."
-  value       = module.trg_acr.admin_password
-} */
+output "cluster_password" {
+  value = azurerm_kubernetes_cluster.k8s.kube_config.0.password
+}
+
+output "kube_config" {
+  value = azurerm_kubernetes_cluster.k8s.kube_config_raw
+}
+
+output "host" {
+  value = azurerm_kubernetes_cluster.k8s.kube_config.0.host
+}
