@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=2.7.0" //"~> 2.5.0"
+  version = "=2.10.0" //"~> 2.5.0"
   features {}
 }
 provider "kubernetes" {
