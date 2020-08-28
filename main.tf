@@ -37,7 +37,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   network_profile {
     load_balancer_sku = "Standard"
-    load_balancer_profile {
+    load_balancer_profile = {
       outbound_ports_allocated = "4000"
       managed_outbound_ip_count = "4"
     }
