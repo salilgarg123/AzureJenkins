@@ -56,3 +56,86 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     Environment = "Development"
   }
 }
+
+/*******************
+jenkins deployment 
+********************/
+
+resource "kubernetes_pod" "jenkins" {
+  metadata {
+    name = "jenkins-instance-dev-001"
+    labels = {
+      App = "jenkins-instance"
+    }
+  }
+
+  spec {
+    container {
+      image = "jenkins/jenkins"
+      name  = "jenkins-container-dev-001"
+
+      port {
+        container_port = 8080
+      }
+    }
+  }
+}
+
+
+# resource "kubernetes_deployment" "jenkins_deployment" {
+#   metadata {
+#     name = "jenkins-deployment-dev-001"
+#     labels = {
+#       dev = "jenkins-dev-001"
+#     }
+#   }
+
+#   spec {
+#     replicas = 2
+
+#     selector {
+#       match_labels = {
+#         dev = "jenkins-dev-001"
+#       }
+#     }
+
+#     template {
+#       metadata {
+#         labels = {
+#           dev = "jenkins-dev-001"
+#         }
+#       }
+
+#       spec {
+#         container {
+#           image = "jenkins/jenkins"
+#           name  = "jenkins-container-dev-001"
+
+#           port {
+#             container_port = 8080
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
+
+resource "kubernetes_service" "jenkins_service" {
+  metadata {
+    name = "jenkins-service-dev-001"
+  }
+  spec {
+    selector = {
+      App = kubernetes_pod.jenkins.metadata.0.labels.App
+    }
+    port {
+      port        = 8080
+      target_port = 8080
+    }
+    type = "LoadBalancer"
+  }
+}
+
+output "load_balancer_ip" {
+  value = "${kubernetes_service.jenkins_service.load_balancer_ingress.0.ip}"
+}
