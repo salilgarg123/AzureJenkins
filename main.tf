@@ -127,7 +127,11 @@ resource "kubernetes_pod" "jenkins" {
 resource "kubernetes_service" "jenkins_service" {
   metadata {
     name = "jenkins-service-dev-001"
-  }
+    annotations {
+      service.beta.kubernetes.io/azure-load-balancer-internal = "true"
+      service.beta.kubernetes.io/azure-load-balancer-internal-subnet = "snet-dev-build-centralus-001"
+      }
+    }
   spec {
     selector = {
       App = kubernetes_pod.jenkins.metadata.0.labels.App
@@ -138,7 +142,6 @@ resource "kubernetes_service" "jenkins_service" {
     }
     type = "ClusterIP"
     cluster_ip = "10.96.0.96"
-    annotations = service.beta.kubernetes.io/azure-load-balancer-internal: "true""
   }
 }
 
