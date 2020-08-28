@@ -1,12 +1,3 @@
-/* module "service_principal" {
-  source = "git@bitbucket.org:mavenwave/trg-terraform-build-service-principal.git"
-  //source            = "../trg-terraform-build-service-principal"
-  application_name  = var.application_name
-  description       = var.description
-  value             = var.value
-  end_date_relative = var.end_date_relative
-} */
-
 resource "azurerm_kubernetes_cluster" "k8s" {
   name                = var.cluster_name
   location            = var.location
@@ -31,9 +22,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   } */
 
   default_node_pool {
-    name       = "agentpool"
-    node_count = var.agent_count
-    vm_size    = "Standard_D2_v2"
+    name           = "agentpool"
+    node_count     = var.agent_count
+    vm_size        = "Standard_D2_v2"
     vnet_subnet_id = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-app-centralus-001/subnets/snet-dev-build-centralus-001"
   }
 
@@ -51,8 +42,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   network_profile {
     load_balancer_sku = "Standard"
     network_plugin    = "azure"
-    private_cluster_enabled = true
   }
+
+  //private_cluster_enabled = true
 
   tags = {
     Environment = "Development"
@@ -83,53 +75,14 @@ resource "kubernetes_pod" "jenkins" {
   }
 }
 
-
-# resource "kubernetes_deployment" "jenkins_deployment" {
-#   metadata {
-#     name = "jenkins-deployment-dev-001"
-#     labels = {
-#       dev = "jenkins-dev-001"
-#     }
-#   }
-
-#   spec {
-#     replicas = 2
-
-#     selector {
-#       match_labels = {
-#         dev = "jenkins-dev-001"
-#       }
-#     }
-
-#     template {
-#       metadata {
-#         labels = {
-#           dev = "jenkins-dev-001"
-#         }
-#       }
-
-#       spec {
-#         container {
-#           image = "jenkins/jenkins"
-#           name  = "jenkins-container-dev-001"
-
-#           port {
-#             container_port = 8080
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
-
 resource "kubernetes_service" "jenkins_service" {
   metadata {
     name = "jenkins-service-dev-001"
-    annotations {
-      service.beta.kubernetes.io/azure-load-balancer-internal = "true"
-      service.beta.kubernetes.io/azure-load-balancer-internal-subnet = "snet-dev-build-centralus-001"
-      }
+    annotations = {
+      "service.beta.kubernetes.io/azure-load-balancer-internal"        = "true"
+      "service.beta.kubernetes.io/azure-load-balancer-internal-subnet" = "snet-dev-build-centralus-001"
     }
+  }
   spec {
     selector = {
       App = kubernetes_pod.jenkins.metadata.0.labels.App
@@ -138,7 +91,7 @@ resource "kubernetes_service" "jenkins_service" {
       port        = 8080
       target_port = 8080
     }
-    type = "ClusterIP"
+    type       = "ClusterIP"
     cluster_ip = "10.96.0.96"
   }
 }

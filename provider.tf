@@ -5,8 +5,8 @@ provider "azurerm" {
 provider "kubernetes" {
 
   //host = "https://k8stest-3d454ce5.hcp.centralus.azmk8s.io"
-  host                   = azurerm_kubernetes_cluster.k8s.kube_config.0.host
-  
+  host = azurerm_kubernetes_cluster.k8s.kube_config.0.host
+
   //username               = azurerm_kubernetes_cluster.k8s.kube_config.0.username
   //password               = azurerm_kubernetes_cluster.k8s.kube_config.0.password
 
