@@ -51,9 +51,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   network_profile {
     load_balancer_sku = "Standard"
     network_plugin    = "azure"
-    docker_bridge_address = "172.17.0.1/16"
     private_cluster_enabled = true
-    service_cidr   = "10.0.16.0/20"
   }
 
   tags = {
