@@ -25,3 +25,7 @@ output "kube_config" {
 output "host" {
   value = azurerm_kubernetes_cluster.k8s.kube_config.0.host
 }
+
+output "load_balancer_ip" {
+  value = "${kubernetes_service.jenkins_service.load_balancer_ingress.0.ip}"
+}

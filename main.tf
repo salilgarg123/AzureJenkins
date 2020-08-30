@@ -36,7 +36,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 
   network_profile {
-    load_balancer_sku = "Standard"
+    load_balancer_sku  = "Standard"
     network_plugin     = "azure"
     service_cidr       = "10.1.0.0/18"
     docker_bridge_cidr = "172.17.0.1/16"
@@ -91,8 +91,4 @@ resource "kubernetes_service" "jenkins_service" {
     type       = "ClusterIP"
     cluster_ip = "10.1.0.11"
   }
-}
-
-output "load_balancer_ip" {
-  value = "${kubernetes_service.jenkins_service.load_balancer_ingress.0.ip}"
 }
