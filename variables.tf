@@ -14,7 +14,7 @@ variable "dns_prefix" {
 }
 
 variable cluster_name {
-  default = "k8stest"
+  default = "aks-dev-jenkins"
 }
 
 variable resource_group_name {
