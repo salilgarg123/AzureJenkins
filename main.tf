@@ -40,12 +40,12 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
   name = "dnslink-bastion-cluster"
   private_dns_zone_name = join(".", slice(split(".", azurerm_kubernetes_cluster.k8s.private_fqdn), 1, length(split(".", azurerm_kubernetes_cluster.k8s.private_fqdn))))
   resource_group_name   = "MC_rg-aks-dev-001_k8stest_centralus"
-  //resource_group_name   = "MC_${var.resource_group_name}_${azurerm_kubernetes_cluster.k8s.name}_${var.location}"
+  //resource_group_name   = var.resource_group_name //"MC_${var.resource_group_name}_${azurerm_kubernetes_cluster.k8s.name}_${var.location}"
   //virtual_network_id    = azurerm_virtual_network.vnet_bastion.id
   virtual_network_id    = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/bastionHosts/trg-dev-bastion"
 }
 
-resource "kubernetes_ingress" "k8_ingress" {
+/*resource "kubernetes_ingress" "k8_ingress" {
   metadata {
     name = "k8-ingress"
     annotations = {
@@ -76,17 +76,17 @@ resource "kubernetes_ingress" "k8_ingress" {
       secret_name = "tls-secret"
     }
   }
-}
+}*/
 
 /*******************
 jenkins deployment 
 ********************/
 
-/* resource "kubernetes_pod" "jenkins" {
+/*resource "kubernetes_pod" "jenkins" {
   metadata {
-    name = "jenkins-instance-dev-001"
+    name = "jenkins-pod-instance-dev-001"
     labels = {
-      App = "jenkins-instance"
+      app = "jenkins-pod-instance"
     }
   }
 
@@ -100,7 +100,7 @@ jenkins deployment
       }
     }
   }
-} */
+}*/
 
 resource "kubernetes_deployment" "jenkins_deployment" {
   metadata {
@@ -139,6 +139,7 @@ resource "kubernetes_deployment" "jenkins_deployment" {
       }
     }
   }
+  depends_on = [azurerm_private_dns_zone_virtual_network_link.link_bastion_cluster]
 }
 
 
@@ -152,13 +153,13 @@ resource "kubernetes_service" "jenkins_service" {
   }
   spec {
     selector = {
-      app = kubernetes_deployment.jenkins_deployment.metadata.0.labels.App
+      app = kubernetes_deployment.jenkins_deployment.metadata.0.labels.app
     }
     port {
       port        = 8080
       target_port = 8080
     }
-    type       = "ClusterIP"
-    cluster_ip = "10.1.0.11"
+    type       = "LoadBalancer"
+    //cluster_ip = "10.1.0.11"
   }
 } 
