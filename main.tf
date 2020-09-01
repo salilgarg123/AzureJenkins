@@ -4,23 +4,10 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   resource_group_name     = var.resource_group_name
   dns_prefix              = var.dns_prefix
   private_cluster_enabled = true
-  /*
-  linux_profile {
-    admin_username = "ubuntu"
-
-    ssh_key {
-      key_data = file(var.ssh_public_key)
-    }
-  }
-*/
+  
   identity {
     type = "SystemAssigned"
   }
-
-  /*   azure_active_directory {
-    managed                = true
-    admin_group_object_ids = var.aks_config.admin_group
-  } */
 
   default_node_pool {
     name           = "agentpool"
@@ -48,11 +35,60 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 }
 
+# Link the Bastion Vnet to the Private DNS Zone generated to resolve the Server IP from the URL in Kubeconfig
+resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" {
+  name = "dnslink-bastion-cluster"
+  private_dns_zone_name = join(".", slice(split(".", azurerm_kubernetes_cluster.k8s.private_fqdn), 1, length(split(".", azurerm_kubernetes_cluster.k8s.private_fqdn))))
+  resource_group_name   = "MC_rg-aks-dev-001_k8stest_centralus"
+  //resource_group_name   = "MC_${var.resource_group_name}_${azurerm_kubernetes_cluster.k8s.name}_${var.location}"
+  //virtual_network_id    = azurerm_virtual_network.vnet_bastion.id
+  virtual_network_id    = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/bastionHosts/trg-dev-bastion"
+}
+
+resource "kubernetes_ingress" "k8_ingress" {
+  metadata {
+    name = "k8-ingress"
+  }
+
+  spec {
+    backend {
+      service_name = "MyApp1"
+      service_port = 8080
+    }
+
+    rule {
+      http {
+        path {
+          backend {
+            service_name = "MyApp1"
+            service_port = 8080
+          }
+
+          path = "/app1/*"
+        }
+
+        path {
+          backend {
+            service_name = "MyApp2"
+            service_port = 8080
+          }
+
+          path = "/app2/*"
+        }
+      }
+    }
+
+    tls {
+      secret_name = "tls-secret"
+    }
+  }
+}
+
 /*******************
 jenkins deployment 
 ********************/
 
-resource "kubernetes_pod" "jenkins" {
+/* resource "kubernetes_pod" "jenkins" {
   metadata {
     name = "jenkins-instance-dev-001"
     labels = {
@@ -70,7 +106,42 @@ resource "kubernetes_pod" "jenkins" {
       }
     }
   }
+} */
+
+resource "kubernetes_deployment" "jenkins_deployment" {
+  metadata {
+    name = "jenkins-instance-dev-001"
+    labels = {
+      App = "jenkins-instance"
+    }
+  }
+
+  spec {
+    replicas = 3
+
+    selector {
+      match_labels = {
+        App = "jenkins-instance"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          App = "jenkins-instance"
+        }
+      }
+
+      spec {
+        container {
+          name  = "jenkins-container-dev-001"
+          image = "jenkins/jenkins"
+        }
+      }
+    }
+  }
 }
+
 
 resource "kubernetes_service" "jenkins_service" {
   metadata {
@@ -82,7 +153,7 @@ resource "kubernetes_service" "jenkins_service" {
   }
   spec {
     selector = {
-      App = kubernetes_pod.jenkins.metadata.0.labels.App
+      App = kubernetes_deployment.jenkins_deployment.metadata.0.labels.App
     }
     port {
       port        = 8080
@@ -91,4 +162,4 @@ resource "kubernetes_service" "jenkins_service" {
     type       = "ClusterIP"
     cluster_ip = "10.1.0.11"
   }
-}
+} 
