@@ -7,7 +7,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   
 
   service_principal {
-    client_id     = "ee54cbc8-0bbd-462e-bc93-07cbc4202a79"
+    client_id     = "dd7a40f7-6ddd-443c-bb7f-2a2b3455891c"
     client_secret = "JmpSa8-3VfcO1_WPTaLLiAT-Xpn~3vfJ14"
   }
 
