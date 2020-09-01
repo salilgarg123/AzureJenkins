@@ -57,7 +57,7 @@ resource "kubernetes_ingress" "k8_ingress" {
 
   spec {
     backend {
-      service_name = "jenkins-service-dev-001"
+      service_name = "jenkins-service"
       service_port = 8080
     }
 
@@ -65,17 +65,13 @@ resource "kubernetes_ingress" "k8_ingress" {
       http {
         path {
           backend {
-            service_name = "jenkins-service-dev-001"
+            service_name = "jenkins-service"
             service_port = 8080
           }
 
-          path = "/jenkins-service-dev-001/*"
+          path = "/jenkins-service/*"
         }
       }
-    }
-
-    tls {
-      secret_name = "tls-secret"
     }
   }
 }
@@ -147,7 +143,7 @@ resource "kubernetes_deployment" "jenkins_deployment" {
 
 resource "kubernetes_service" "jenkins_service" {
   metadata {
-    name = "jenkins-service-dev-001"
+    name = "jenkins-service"
     annotations = {
       "service.beta.kubernetes.io/azure-load-balancer-internal"        = "true"
       "service.beta.kubernetes.io/azure-load-balancer-internal-subnet" = "snet-dev-build-centralus-001"
