@@ -5,8 +5,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix              = var.dns_prefix
   private_cluster_enabled = true
   
+
   service_principal {
-    client_id     = "9fe6e486-283c-4b89-932b-b52a80c322f8"
+    client_id     = "ee54cbc8-0bbd-462e-bc93-07cbc4202a79"
     client_secret = "JmpSa8-3VfcO1_WPTaLLiAT-Xpn~3vfJ14"
   }
 
