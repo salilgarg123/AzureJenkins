@@ -80,26 +80,6 @@ resource "kubernetes_ingress" "k8_ingress" {
 jenkins deployment 
 ********************/
 
-/*resource "kubernetes_pod" "jenkins" {
-  metadata {
-    name = "jenkins-pod-instance-dev-001"
-    labels = {
-      app = "jenkins-pod-instance"
-    }
-  }
-
-  spec {
-    container {
-      image = "jenkins/jenkins"
-      name  = "jenkins-container-dev-001"
-
-      port {
-        container_port = 8080
-      }
-    }
-  }
-}*/
-
 resource "kubernetes_deployment" "jenkins_deployment" {
   metadata {
     name = "jenkins-instance-dev-001"
@@ -158,6 +138,5 @@ resource "kubernetes_service" "jenkins_service" {
       target_port = 8080
     }
     type       = "LoadBalancer"
-    //cluster_ip = "10.1.0.11"
   }
 } 
