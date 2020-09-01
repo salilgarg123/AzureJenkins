@@ -74,6 +74,7 @@ resource "kubernetes_ingress" "k8_ingress" {
       }
     }
   }
+  depends_on = [azurerm_private_dns_zone_virtual_network_link.link_bastion_cluster]
 }
 
 /*******************
