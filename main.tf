@@ -1,16 +1,3 @@
-resource "azurerm_user_assigned_identity" "trg_jenkins_serviceaccount" {
-  resource_group_name = var.resource_group_name
-  location            = var.location
-
-  name                = "sa-${var.cluster_name}"
-}
-
-resource "azurerm_role_assignment" "ra1" {
-  scope                = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-app-centralus-001/subnets/snet-dev-build-centralus-001"
-  role_definition_name = "Network Contributor"
-  principal_id         = azurerm_user_assigned_identity.trg_jenkins_serviceaccount.principal_id
-}
-
 resource "azurerm_kubernetes_cluster" "k8s" {
   name                    = var.cluster_name
   location                = var.location
@@ -18,10 +5,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   dns_prefix              = var.dns_prefix
   private_cluster_enabled = true
   
-  identity {
-    type = "UserSystemAssigned"
-    tenant_id = "586984fe-4a7c-4a70-ad73-211810c12205"
-    object_id = azurerm_user_assigned_identity.trg_jenkins_serviceaccount.principal_id
+  service_principal {
+    client_id     = "9fe6e486-283c-4b89-932b-b52a80c322f8"
+    client_secret = "JmpSa8-3VfcO1_WPTaLLiAT-Xpn~3vfJ14"
   }
 
   default_node_pool {
