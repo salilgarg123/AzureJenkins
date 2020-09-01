@@ -29,3 +29,7 @@ output "host" {
 output "load_balancer_ip" {
   value = "${kubernetes_service.jenkins_service.load_balancer_ingress.0.ip}"
 } */
+
+output "ingress_ip" {
+  value = formatlist("%s ", kubernetes_ingress.k8_ingress.load_balancer_ingress.*.ip)
+}

@@ -48,11 +48,14 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
 resource "kubernetes_ingress" "k8_ingress" {
   metadata {
     name = "k8-ingress"
+    annotations = {
+      "ingress.kubernetes.io/rewrite-target" = "/"
+    }
   }
 
   spec {
     backend {
-      service_name = "MyApp1"
+      service_name = "jenkins-service-dev-001"
       service_port = 8080
     }
 
@@ -60,20 +63,11 @@ resource "kubernetes_ingress" "k8_ingress" {
       http {
         path {
           backend {
-            service_name = "MyApp1"
+            service_name = "jenkins-service-dev-001"
             service_port = 8080
           }
 
-          path = "/app1/*"
-        }
-
-        path {
-          backend {
-            service_name = "MyApp2"
-            service_port = 8080
-          }
-
-          path = "/app2/*"
+          path = "/jenkins-service-dev-001/*"
         }
       }
     }
@@ -112,7 +106,7 @@ resource "kubernetes_deployment" "jenkins_deployment" {
   metadata {
     name = "jenkins-instance-dev-001"
     labels = {
-      App = "jenkins-instance"
+      app = "jenkins-instance"
     }
   }
 
@@ -121,14 +115,14 @@ resource "kubernetes_deployment" "jenkins_deployment" {
 
     selector {
       match_labels = {
-        App = "jenkins-instance"
+        app = "jenkins-instance"
       }
     }
 
     template {
       metadata {
         labels = {
-          App = "jenkins-instance"
+          app = "jenkins-instance"
         }
       }
 
@@ -136,6 +130,11 @@ resource "kubernetes_deployment" "jenkins_deployment" {
         container {
           name  = "jenkins-container-dev-001"
           image = "jenkins/jenkins"
+          /* image = "gcr.io/google_containers/echoserver:1.4"
+
+          port {
+            container_port = 8080
+          } */
         }
       }
     }
@@ -153,7 +152,7 @@ resource "kubernetes_service" "jenkins_service" {
   }
   spec {
     selector = {
-      App = kubernetes_deployment.jenkins_deployment.metadata.0.labels.App
+      app = kubernetes_deployment.jenkins_deployment.metadata.0.labels.App
     }
     port {
       port        = 8080
