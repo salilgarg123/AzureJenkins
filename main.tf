@@ -42,10 +42,10 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
   resource_group_name   = "MC_rg-aks-dev-001_k8stest_centralus"
   //resource_group_name   = var.resource_group_name //"MC_${var.resource_group_name}_${azurerm_kubernetes_cluster.k8s.name}_${var.location}"
   //virtual_network_id    = azurerm_virtual_network.vnet_bastion.id
-  virtual_network_id    = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/bastionHosts/trg-dev-bastion"
+  virtual_network_id    = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-mgmt-centralus-001"
 }
 
-/*resource "kubernetes_ingress" "k8_ingress" {
+resource "kubernetes_ingress" "k8_ingress" {
   metadata {
     name = "k8-ingress"
     annotations = {
@@ -76,7 +76,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
       secret_name = "tls-secret"
     }
   }
-}*/
+}
 
 /*******************
 jenkins deployment 
