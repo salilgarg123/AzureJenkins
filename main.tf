@@ -58,6 +58,10 @@ resource "helm_release" "trg_ha_proxy" {
     value = "DaemonSet"
   }
   set {
+    name = "controller.service.type"
+    value = "LoadBalancer"
+  }
+  set {
     name = "controller.ingressClass"
     value = "haproxy"
   }
