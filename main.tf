@@ -60,5 +60,5 @@ resource "helm_release" "trg_jenkins" {
   set {
     name = "master.ingress.hostname"
     value = "build-dev.optimize.trgscreen.com"
-  
+  }
 }
