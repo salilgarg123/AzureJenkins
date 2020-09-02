@@ -81,7 +81,7 @@ resource "helm_release" "trg_jenkins" {
     value = "haproxytech"
   }
   set {
-    name = "master.ingress.path.backend.serviceName"
+    name = "master.ingress.paths.backend.serviceName"
     value = "build-jenkins"
   }
 }
