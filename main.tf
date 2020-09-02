@@ -37,6 +37,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 }
 
+// add to cluster module
 # Link the Bastion Vnet to the Private DNS Zone generated to resolve the Server IP from the URL in Kubeconfig
 resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" {
   name                  = "dnslink-bastion-cluster"
@@ -47,6 +48,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
   virtual_network_id = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-mgmt-centralus-001"
 }
 
+// separate repo for services
 resource "kubernetes_ingress" "k8_ingress" {
   metadata {
     name = "k8-ingress"
