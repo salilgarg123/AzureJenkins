@@ -48,98 +48,17 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
   virtual_network_id = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-mgmt-centralus-001"
 }
 
-// separate repo for services
-resource "kubernetes_ingress" "k8_ingress" {
-  metadata {
-    name = "k8-ingress"
-    annotations = {
-      "ingress.kubernetes.io/rewrite-target" = "/"
-    }
+resource "helm_release" "trg_jenkins" {
+  name    = "build-jenkins"
+  repository = "https://charts.jenkins.io"
+  chart    = "jenkinsci"
+  version = "2.6.1" //jenkins-2.6.1
+/*   set {
+    name = "controller.kind"
+    value = "DaemonSet"
   }
-
-  spec {
-    backend {
-      service_name = "jenkins-service"
-      service_port = 8080
-    }
-
-    rule {
-      http {
-        path {
-          backend {
-            service_name = "jenkins-service"
-            service_port = 8080
-          }
-
-          path = "/jenkins-service/*"
-        }
-      }
-    }
-  }
-  depends_on = [azurerm_private_dns_zone_virtual_network_link.link_bastion_cluster]
-}
-
-/*******************
-jenkins deployment 
-********************/
-
-resource "kubernetes_deployment" "jenkins_deployment" {
-  metadata {
-    name = "jenkins-instance-dev-001"
-    labels = {
-      app = "jenkins-instance"
-    }
-  }
-
-  spec {
-    replicas = 3
-
-    selector {
-      match_labels = {
-        app = "jenkins-instance"
-      }
-    }
-
-    template {
-      metadata {
-        labels = {
-          app = "jenkins-instance"
-        }
-      }
-
-      spec {
-        container {
-          name  = "jenkins-container-dev-001"
-          image = "jenkins/jenkins"
-          /* image = "gcr.io/google_containers/echoserver:1.4"
-
-          port {
-            container_port = 8080
-          } */
-        }
-      }
-    }
-  }
-  depends_on = [azurerm_private_dns_zone_virtual_network_link.link_bastion_cluster]
-}
-
-
-resource "kubernetes_service" "jenkins_service" {
-  metadata {
-    name = "jenkins-service"
-    annotations = {
-      "service.beta.kubernetes.io/azure-load-balancer-internal"        = "true"
-      "service.beta.kubernetes.io/azure-load-balancer-internal-subnet" = "snet-dev-build-centralus-001"
-    }
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.jenkins_deployment.metadata.0.labels.app
-    }
-    port {
-      port        = 80
-      target_port = 8080
-    }
-    type = "LoadBalancer"
-  }
+  set {
+    name = "controller.ingressClass"
+    value = "haproxy"
+  } */
 }
