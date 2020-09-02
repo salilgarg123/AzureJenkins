@@ -49,7 +49,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
 }
 
 // separate repo for services
-resource "kubernetes_ingress" "k8_ingress" {
+/* resource "kubernetes_ingress" "k8_ingress" {
   metadata {
     name = "k8-ingress"
     annotations = {
@@ -77,7 +77,7 @@ resource "kubernetes_ingress" "k8_ingress" {
     }
   }
   depends_on = [azurerm_private_dns_zone_virtual_network_link.link_bastion_cluster]
-}
+} */
 
 /*******************
 jenkins deployment 
@@ -137,7 +137,7 @@ resource "kubernetes_service" "jenkins_service" {
       app = kubernetes_deployment.jenkins_deployment.metadata.0.labels.app
     }
     port {
-      port        = 8080
+      port        = 80
       target_port = 8080
     }
     type = "LoadBalancer"
