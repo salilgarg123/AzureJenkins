@@ -58,14 +58,6 @@ resource "helm_release" "trg_ha_proxy" {
     value = "DaemonSet"
   }
   set {
-    name = "controller.service.type"
-    value = "LoadBalancer"
-  }
-  set {
-    name = "controller.service.loadBalancerIP"
-    value = "10.0.31.201"
-  }
-  set {
     name = "controller.ingressClass"
     value = "haproxy"
   }
@@ -83,5 +75,9 @@ resource "helm_release" "trg_jenkins" {
   set {
     name = "master.ingress.hostname"
     value = "build-dev.optimize.trgscreen.com"
+  }
+  set {
+    name = "master.ingress.annotations.kuberentes\\.io/ingress.class"
+    value = "haproxytech"
   }
 }
