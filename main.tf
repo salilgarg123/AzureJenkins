@@ -82,4 +82,3 @@ resource "helm_release" "trg_jenkins" {
   }
 }
 
-helm install stable/nginx-ingress --set controller.service.annotations."cloud\.google\.com\/load-balancer\-type"=Internal
