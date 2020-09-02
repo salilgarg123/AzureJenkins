@@ -62,6 +62,10 @@ resource "helm_release" "trg_ha_proxy" {
     value = "LoadBalancer"
   }
   set {
+    name = "controller.service.loadBalancerIP"
+    value = "10.0.31.201"
+  }
+  set {
     name = "controller.ingressClass"
     value = "haproxy"
   }
