@@ -53,12 +53,12 @@ resource "helm_release" "trg_jenkins" {
   repository = "https://charts.jenkins.io"
   chart    = "jenkins"
   version = "2.6.1"
-/*   set {
-    name = "controller.kind"
-    value = "DaemonSet"
+   set {
+    name = "master.ingress.enabled"
+    value = "true"
   }
   set {
-    name = "controller.ingressClass"
-    value = "haproxy"
-  } */
+    name = "master.ingress.hostname"
+    value = "build-dev.optimize.trgscreen.com"
+  
 }
