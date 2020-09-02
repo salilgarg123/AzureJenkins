@@ -49,7 +49,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
 }
 
 // separate repo for services
-/* resource "kubernetes_ingress" "k8_ingress" {
+resource "kubernetes_ingress" "k8_ingress" {
   metadata {
     name = "k8-ingress"
     annotations = {
@@ -77,7 +77,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
     }
   }
   depends_on = [azurerm_private_dns_zone_virtual_network_link.link_bastion_cluster]
-} */
+}
 
 /*******************
 jenkins deployment 
