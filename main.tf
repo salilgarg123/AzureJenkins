@@ -76,6 +76,7 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.annotations.kuberentes\\.io/ingress\\.class"
     value = "haproxytech"
   }
+}
 /*
   set {
     name = "master.ingress.hostname"
