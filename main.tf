@@ -52,7 +52,7 @@ resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
   chart    = "jenkinsci"
-  version = "2.6.1" //jenkins-2.6.1
+  version = "jenkins-2.6.1"
 /*   set {
     name = "controller.kind"
     value = "DaemonSet"
