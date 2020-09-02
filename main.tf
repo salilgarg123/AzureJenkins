@@ -51,8 +51,8 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
-  chart    = "jenkinsci"
-  version = "jenkins-2.6.1"
+  chart    = "jenkins"
+  version = "2.6.1"
 /*   set {
     name = "controller.kind"
     value = "DaemonSet"
