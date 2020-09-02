@@ -48,6 +48,21 @@ resource "azurerm_private_dns_zone_virtual_network_link" "link_bastion_cluster" 
   virtual_network_id = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-mgmt-centralus-001"
 }
 
+resource "helm_release" "trg_ha_proxy" {
+  name    = "build-ha-proxy"
+  repository = "https://haproxytech.github.io/helm-charts"
+  chart    = "kubernetes-ingress"
+  version = "1.4.4"
+  set {
+    name = "controller.kind"
+    value = "DaemonSet"
+  }
+  set {
+    name = "controller.ingressClass"
+    value = "haproxy"
+  }
+}
+
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
