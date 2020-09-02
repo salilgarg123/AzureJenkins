@@ -73,16 +73,18 @@ resource "helm_release" "trg_jenkins" {
     value = "true"
   }
   set {
-    name = "master.ingress.hostname"
-    value = "build-dev.optimize.trgscreen.com"
-  }
-  set {
     name = "master.ingress.annotations.kuberentes\\.io/ingress\\.class"
     value = "haproxytech"
+  }
+/*
+  set {
+    name = "master.ingress.hostname"
+    value = "build-dev.optimize.trgscreen.com"
   }
   set {
     name = "master.ingress.paths.backend.serviceName"
     value = "build-jenkins"
   }
 }
+*/
 
