@@ -77,7 +77,7 @@ resource "helm_release" "trg_jenkins" {
     value = "build-dev.optimize.trgscreen.com"
   }
   set {
-    name = "master.ingress.annotations.kuberentes\\.io/ingress.class"
+    name = "master.ingress.annotations.kuberentes\\.io/ingress.\\class"
     value = "haproxytech"
   }
 }
