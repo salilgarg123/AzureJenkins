@@ -61,6 +61,10 @@ resource "helm_release" "trg_ha_proxy" {
     name = "controller.ingressClass"
     value = "haproxy"
   }
+  set {
+    name = "controller.daemonset.userHostPort"
+    value = true
+  }
 }
 
 resource "helm_release" "trg_jenkins" {
@@ -70,11 +74,11 @@ resource "helm_release" "trg_jenkins" {
   version = "2.6.1"
    set {
     name = "master.ingress.enabled"
-    value = "true"
+    value = "false"
   }
   set {
     name = "master.ingress.annotations.kuberentes\\.io/ingress\\.class"
-    value = "haproxytech"
+    value = "haproxy"
   }
 }
 /*
