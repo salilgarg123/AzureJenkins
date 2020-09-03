@@ -95,6 +95,10 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.annotations.kubernetes\\.io/ingress\\.class"
     value = "nginx"
   }
+  set {
+    name = "master.ingress.apiVersion"
+    value = "networking.k8s.io/v1beta1"
+  }
 }
 
 
