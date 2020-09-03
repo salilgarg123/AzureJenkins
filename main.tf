@@ -22,6 +22,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     oms_agent {
       enabled = false
     }
+    kube_dashboard {
+      enabled = false
+    }
   }
 
   network_profile {
@@ -88,8 +91,8 @@ resource "helm_release" "trg_jenkins" {
     value = true
   }
   set {
-    name = "master.ingress.paths"
-    value = "[/]"
+    name = "master.ingress.path"
+    value = "/"
   }
   set {
     name = "master.ingress.annotations.kubernetes\\.io/ingress\\.class"
