@@ -66,7 +66,7 @@ resource "helm_release" "trg_ha_proxy" {
     value = true
   }
 }
-
+ 
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
