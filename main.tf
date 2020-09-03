@@ -66,43 +66,15 @@ resource "helm_release" "trg_ha_proxy" {
     value = true
   }
 }
- 
+
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
   chart    = "jenkins"
   version = "2.6.1"
-   set {
-    name = "master.ingress.enabled"
-    value = "true"
-  }
   set {
-    name = "master.ingress.annotations.kuberentes\\.io/ingress\\.class"
-    value = "haproxy"
-  }
-  set {
-    name = "master.servicePort"
-    value = "8081"
-  }
-  set {
-    name = "master.ingress.hostname"
-    value = "build-dev.optimize.trgscreen.com"
-  }
-  set {
-    name = "master.ingress.paths.backend.serviceName"
-    value = "build-jenkins"
-  }
-  set {
-    name = "master.ingress.paths.backend.servicePort"
-    value = "8081"
-  }
-  set {
-    name = "master.ingress.paths.backend.path"
-    value = "/jenkins"
-  }
-  set {
-    name = "master.ingress.paths"
-    value = "/"
+    name = "master.serviceType"
+    value = "LoadBalancer"
   }
 }
 
