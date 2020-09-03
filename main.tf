@@ -100,6 +100,10 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.paths.backend.path"
     value = "/jenkins"
   }
+  set {
+    name = "master.ingress.paths"
+    value = "/"
+  }
 }
 
 
