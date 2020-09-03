@@ -66,11 +66,18 @@ resource "helm_release" "trg_ha_proxy" {
     value = true
   }
 }
-
-resource "helm_release" "trg_ingress" {
-  name = 
-}
 */
+resource "helm_release" "trg_ingress" {
+  name = "nginx-ingress"
+  repository = "https://kubernetes-charts.storage.googleapis.com/"
+  chart      = "nginx-ingress"
+  version    = "1.27.0"
+  set {
+    name = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/azure-load-balancer-internal"
+    value = true
+  }
+}
+
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
