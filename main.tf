@@ -74,7 +74,7 @@ resource "helm_release" "trg_jenkins" {
   version = "2.6.1"
   set {
     name = "master.serviceType"
-    value = "NodePort"
+    value = "ClusterIP""
   }
 }
 
