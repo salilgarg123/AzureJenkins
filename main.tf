@@ -80,7 +80,7 @@ resource "helm_release" "trg_ingress" {
     value = true
   }
 }
-
+/*
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
@@ -103,5 +103,4 @@ resource "helm_release" "trg_jenkins" {
     value = "networking.k8s.io/v1beta1"
   }
 }
-
-
+*/
