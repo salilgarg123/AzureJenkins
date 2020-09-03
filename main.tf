@@ -84,8 +84,16 @@ resource "helm_release" "trg_jenkins" {
   chart    = "jenkins"
   version = "2.6.1"
   set {
-    name = "master.serviceType"
-    value = "ClusterIP"
+    name = "master.ingress.enabled"
+    value = true
+  }
+  set {
+    name = "master.ingress.paths"
+    value = "[/]"
+  }
+  set {
+    name = "master.ingress.annotations.kubernetes\\.io/ingress\\.class"
+    value = "nginx"
   }
 }
 
