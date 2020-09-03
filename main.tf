@@ -80,8 +80,10 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.annotations.kuberentes\\.io/ingress\\.class"
     value = "haproxy"
   }
-}
-/*
+  set {
+    name = "master.servicePort"
+    value = "8081"
+  }
   set {
     name = "master.ingress.hostname"
     value = "build-dev.optimize.trgscreen.com"
@@ -89,6 +91,10 @@ resource "helm_release" "trg_jenkins" {
   set {
     name = "master.ingress.paths.backend.serviceName"
     value = "build-jenkins"
+  }
+  set {
+    name = "master.ingress.paths.backend.servicePort"
+    value = "8081"
   }
 }
 */
