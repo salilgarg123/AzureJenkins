@@ -96,6 +96,10 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.paths.backend.servicePort"
     value = "8081"
   }
+  set {
+    name = "master.ingress.paths.backend.paths"
+    value = "[/]"
+  }
 }
 
 
