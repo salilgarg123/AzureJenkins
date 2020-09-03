@@ -97,5 +97,5 @@ resource "helm_release" "trg_jenkins" {
     value = "8081"
   }
 }
-*/
+
 
