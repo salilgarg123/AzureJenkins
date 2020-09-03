@@ -74,7 +74,7 @@ resource "helm_release" "trg_jenkins" {
   version = "2.6.1"
    set {
     name = "master.ingress.enabled"
-    value = "false"
+    value = "true"
   }
   set {
     name = "master.ingress.annotations.kuberentes\\.io/ingress\\.class"
