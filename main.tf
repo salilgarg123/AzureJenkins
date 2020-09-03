@@ -97,8 +97,8 @@ resource "helm_release" "trg_jenkins" {
     value = "8081"
   }
   set {
-    name = "master.ingress.paths.backend.paths"
-    value = "[/]"
+    name = "master.ingress.paths.backend.path"
+    value = "/jenkins"
   }
 }
 
