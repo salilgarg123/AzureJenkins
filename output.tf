@@ -36,7 +36,7 @@ output "load_balancer_ip" {
 
 /*output "ingress_ip" {
   value = formatlist("%s ", kubernetes_ingress.k8_ingress.load_balancer_ingress.*.ip)
-}*/
+}
 
 output "helm_values" {
   value = helm_release.trg_jenkins.values
@@ -49,3 +49,4 @@ output "helm_chart" {
 output "k8_namespace" {
   value = helm_release.trg_jenkins.namespace
 }
+*/
