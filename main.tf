@@ -5,47 +5,26 @@ module "jenkins_k8cluster" {
   resource_group = data.terraform_remote_state.resource_group.outputs.id.value[2]
 }
 
-/*******************
-jenkins deployment 
-********************/
-
-resource "kubernetes_pod" "jenkins" {
-  metadata {
-    name = "jenkins-instance-dev-001"
-    labels = {
-      App = "jenkins-instance"
-    }
+resource "helm_release" "trg_jenkins" {
+  name    = "build-jenkins"
+  repository = "https://charts.jenkins.io"
+  chart    = "jenkins"
+  version = "2.6.1"
+  
+  set {
+    name = "master.ingress.enabled"
+    value = true
   }
-
-  spec {
-    container {
-      image = "jenkins/jenkins"
-      name  = "jenkins-container-dev-001"
-
-      port {
-        container_port = 8080
-      }
-    }
+  set {
+    name = "master.ingress.path"
+    value = "/"
   }
-}
-
-resource "kubernetes_service" "jenkins_service" {
-  metadata {
-    name = "jenkins-service-dev-001"
-    annotations = {
-      "service.beta.kubernetes.io/azure-load-balancer-internal"        = "true"
-      "service.beta.kubernetes.io/azure-load-balancer-internal-subnet" = "snet-dev-build-centralus-001"
-    }
+  set {
+    name = "master.ingress.annotations.kubernetes\\.io/ingress\\.class"
+    value = "nginx"
   }
-  spec {
-    selector = {
-      App = kubernetes_pod.jenkins.metadata.0.labels.App
-    }
-    port {
-      port        = 8080
-      target_port = 8080
-    }
-    type       = "ClusterIP"
-    cluster_ip = "10.1.0.11"
+  set {
+    name = "master.ingress.apiVersion"
+    value = "networking.k8s.io/v1beta1"
   }
 }

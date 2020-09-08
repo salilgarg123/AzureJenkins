@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "resource_group" {
+/* data "terraform_remote_state" "resource_group" {
   backend = "azurerm"
   config = {
     resource_group_name  = "rg-terraform-dev-001"
@@ -15,4 +15,4 @@ data "terraform_remote_state" "resource_group" {
     container_name       = "bootstrapstate"
     key                  = "terraform.tfstate"
   }
-}
+} */
