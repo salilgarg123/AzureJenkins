@@ -64,12 +64,23 @@ resource "helm_release" "trg_jenkins" {
   repository = "https://charts.jenkins.io"
   chart    = "jenkins"
   version = "2.6.1"
-/*   values = [<<EOF
+  values = [<<EOF
+    apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    metadata:
+      name: slow
+    provisioner: kubernetes.io/azure-disk
+    parameters:
+      storageaccounttype: Standard_LRS
+      kind: Shared
     persistence:
       enabled: true
-      size: "4Gi"
+      accessModes: 
+      - ReadWriteOnce 
+      ## Persistent Volume size 
+      size: 5Gi
     EOF
-    ] */
+    ]
   set {
     name = "master.ingress.enabled"
     value = true
