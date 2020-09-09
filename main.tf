@@ -71,14 +71,9 @@ resource "helm_release" "trg_jenkins" {
       name: slow
     provisioner: kubernetes.io/azure-disk
     parameters:
-      storageaccounttype: Standard_LRS
-      kind: Shared
-    persistence:
-      enabled: true
-      accessModes: 
-      - ReadWriteOnce 
-      ## Persistent Volume size 
-      size: 5Gi
+      skuName: Standard_LRS
+      location: centralus
+      storageAccount: stdevterraformstate002
     EOF
     ]
   set {
