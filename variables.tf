@@ -29,7 +29,7 @@ variable "aks_info" {
   }))
 
   default = {
-    "etl-dev.optimize.trgscreen.com" = {
+    "aks-dev-jenkins" = {
       name                = "aks-jenkins-dev"
       location            = "centralus"
       resource_group_name = "rg-aks-dev-001"
