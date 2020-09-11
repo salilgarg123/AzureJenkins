@@ -7,6 +7,32 @@ module "jenkins_k8cluster" {
   management_vnet_id = var.management_vnet_id
 }
 
+resource "kubernetes_secret" "jenkins_k8secret" {
+  metadata {
+    name = "basic-auth"
+  }
+
+  data = {
+    username = "admin"
+    password = "P4ssw0rd"
+  }
+
+  type = "kubernetes.io/basic-auth"
+}
+
+resource "azurerm_managed_disk" "jenkins_managed_disk" {
+  name                 = "manageddisk_dev_jenkins"
+  location             = var.aks_info.aks-dev-jenkins.location
+  resource_group_name  = var.aks_info.aks-dev-jenkins.resource_group_name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = "1"
+
+  tags = {
+    environment = var.aks_info.aks-dev-jenkins.tag_environment
+  }
+}
+
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
@@ -21,7 +47,7 @@ resource "helm_release" "trg_jenkins" {
     parameters:
       skuName: Standard_LRS
       location: centralus
-      storageAccount: stdevterraformstate002
+      storageAccount: manageddisk_dev_jenkins
     EOF
     ]
   set {
@@ -40,5 +66,6 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.apiVersion"
     value = "networking.k8s.io/v1beta1"
   }
+  depends_on = [azurerm_managed_disk.jenkins_managed_disk, module.jenkins_k8cluster]
 }
 

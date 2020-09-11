@@ -60,3 +60,22 @@ output "chart" {
   value       = module.jenkins_k8cluster.chart
   description = "The name of the chart"
 }
+
+output "managed_disk_id" {
+  value       = azurerm_managed_disk.jenkins_managed_disk.id
+  description = "The ID of the Managed Disk."
+}
+
+/* output "jenkins_k8s_self_link" {
+  value       = kubernetes_secret.jenkins_k8secret.self_link
+  description = "A URL representing this secret."
+}
+
+output "jenkins_k8s_uid" {
+  value       = kubernetes_secret.jenkins_k8secret.uid
+  description = "The unique in time and space value for this secret."
+} */
+
+output "jenkins_k8s_secret_module" {
+  value       = kubernetes_secret.jenkins_k8secret
+}
