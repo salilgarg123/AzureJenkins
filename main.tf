@@ -140,7 +140,7 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.apiVersion"
     value = "networking.k8s.io/v1beta1"
   }
-  set {
+  /* set {
     name = "master.JCasC.enabled"
     value = true
   }
@@ -153,12 +153,12 @@ resource "helm_release" "trg_jenkins" {
     value = "legacy"
   }
   set {
-    name = "master.installPlugins"
-    value = "{${join(",", var.jenkins_plugins)}}"
-  }
-  set {
     name = "master.JCasC.authorizationStrategy.loggedInUsersCanDoAnything.allowAnonymousRead"
     value = false
+  } */
+  set {
+    name = "master.installPlugins"
+    value = "{${join(",", var.jenkins_plugins)}}"
   }
   depends_on = [azurerm_managed_disk.jenkins_managed_disk, azurerm_kubernetes_cluster.k8s]
 }
