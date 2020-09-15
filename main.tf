@@ -2,12 +2,10 @@ module "jenkins_k8cluster" {
   source = "git@bitbucket.org:mavenwave/trg-terraform-build-aks"
   //source             = "../trg-terraform-build-aks"
   aks_info           = var.aks_info
-  sp_app_id          = var.sp_app_id
-  sp_client_secret   = var.sp_client_secret
   management_vnet_id = var.management_vnet_id
 }
 
-resource "kubernetes_secret" "jenkins_k8secret" {
+/* resource "kubernetes_secret" "jenkins_k8secret" {
   metadata {
     name = "basic-auth"
   }
@@ -18,15 +16,18 @@ resource "kubernetes_secret" "jenkins_k8secret" {
   }
 
   type = "kubernetes.io/basic-auth"
-}
+} */
 
 resource "azurerm_managed_disk" "jenkins_managed_disk" {
+    lifecycle {
+          prevent_destroy = true
+    }
   name                 = "manageddisk_dev_jenkins"
   location             = var.aks_info.aks-dev-jenkins.location
   resource_group_name  = var.aks_info.aks-dev-jenkins.resource_group_name
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
-  disk_size_gb         = "1"
+  disk_size_gb         = "8"
 
   tags = {
     environment = var.aks_info.aks-dev-jenkins.tag_environment
@@ -38,7 +39,7 @@ resource "helm_release" "trg_jenkins" {
   repository = "https://charts.jenkins.io"
   chart    = "jenkins"
   version = "2.6.1"
-  values = [<<EOF
+  /* values = [<<EOF
     apiVersion: storage.k8s.io/v1
     kind: StorageClass
     metadata:
@@ -49,7 +50,19 @@ resource "helm_release" "trg_jenkins" {
       location: centralus
       storageAccount: manageddisk_dev_jenkins
     EOF
-    ]
+    ] */
+  set {
+    name = "persistence.enabled"
+    value = true
+  }
+  set {
+    name = "persistence.existingClaim"
+    value = "manageddisk_dev_jenkins"
+  }
+  set {
+    name = "persistence.storageClass"
+    value = ""
+  }
   set {
     name = "master.ingress.enabled"
     value = true
@@ -65,6 +78,26 @@ resource "helm_release" "trg_jenkins" {
   set {
     name = "master.ingress.apiVersion"
     value = "networking.k8s.io/v1beta1"
+  }
+  set {
+    name = "master.JCasC.enabled"
+    value = true
+  }
+  set {
+    name = "master.JCasC.defaultConfig"
+    value = true
+  }
+  set {
+    name = "master.JCasC.securityRealm"
+    value = "legacy"
+  }
+  set {
+    name = "master.installPlugins"
+    value = "{${join(",", var.jenkins_plugins)}}"
+  }
+  set {
+    name = "master.JCasC.authorizationStrategy.loggedInUsersCanDoAnything.allowAnonymousRead"
+    value = false
   }
   depends_on = [azurerm_managed_disk.jenkins_managed_disk, module.jenkins_k8cluster]
 }
