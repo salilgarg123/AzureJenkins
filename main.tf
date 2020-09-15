@@ -160,6 +160,6 @@ resource "helm_release" "trg_jenkins" {
     name = "master.JCasC.authorizationStrategy.loggedInUsersCanDoAnything.allowAnonymousRead"
     value = false
   }
-  depends_on = [azurerm_managed_disk.jenkins_managed_disk, module.jenkins_k8cluster]
+  depends_on = [azurerm_managed_disk.jenkins_managed_disk, azurerm_kubernetes_cluster.k8s]
 }
 
