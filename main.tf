@@ -13,7 +13,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   default_node_pool {
     name           = "agentpool"
-    node_count     = "1"
+    node_count     = "3"
     vm_size        = "Standard_D2_v2"
     vnet_subnet_id = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-app-centralus-001/subnets/snet-dev-build-centralus-001"
   }
