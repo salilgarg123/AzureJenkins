@@ -76,6 +76,6 @@ output "jenkins_k8s_uid" {
   description = "The unique in time and space value for this secret."
 } */
 
-output "jenkins_k8s_secret_module" {
+/* output "jenkins_k8s_secret_module" {
   value       = kubernetes_secret.jenkins_k8secret
-}
+} */
