@@ -1,4 +1,4 @@
-output "client_key" {
+/* output "client_key" {
   value = azurerm_kubernetes_cluster.k8s.kube_config.0.client_key
 }
 
@@ -17,15 +17,21 @@ output "cluster_username" {
 output "cluster_password" {
   value = azurerm_kubernetes_cluster.k8s.kube_config.0.password
 }
+ */
 
 output "kube_config" {
-  value = azurerm_kubernetes_cluster.k8s.kube_config_raw
+  value = module.jenkins_k8cluster.kube_config_raw
 }
 
 output "host" {
-  value = azurerm_kubernetes_cluster.k8s.kube_config.0.host
+  value = module.jenkins_k8cluster.host
 }
 
 output "load_balancer_ip" {
-  value = "${kubernetes_service.jenkins_service.load_balancer_ingress.0.ip}"
+  value = kubernetes_service.jenkins_service.load_balancer_ingress.0.ip
+}
+
+output "jenkins_managed_disk_id" {
+  description = "The ID of the Managed Disk."
+  value = azurerm_managed_disk.jenkins_managed_disk.id
 }
