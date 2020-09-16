@@ -1,4 +1,4 @@
-output "client_key" {
+/* output "client_key" {
   value = module.jenkins_k8cluster.kube_config.client_key
   sensitive = true
 }
@@ -20,7 +20,7 @@ output "cluster_username" {
 output "cluster_password" {
   value = module.jenkins_k8cluster.kube_config.password
   sensitive = true
-}
+} */
 
 output "kube_config" {
   value = module.jenkins_k8cluster.kube_config_raw
