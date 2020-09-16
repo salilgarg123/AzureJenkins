@@ -50,3 +50,14 @@ variable "aks_info" {
       sp_end_date                        = "2099-01-01T01:02:03Z"
   }
 }
+
+variable "jenkins_plugins" { 
+  default = [
+    "kubernetes:1.25.7",
+    "workflow-job:2.39",
+    "workflow-aggregator:2.6",
+    "credentials-binding:1.23",
+    "git:4.2.2",
+    "configuration-as-code:1.41"
+  ]
+}

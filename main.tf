@@ -86,5 +86,5 @@ resource "helm_release" "trg_jenkins" {
     name = "master.installPlugins"
     value = "{${join(",", var.jenkins_plugins)}}"
   }
-  depends_on = [azurerm_managed_disk.jenkins_managed_disk, azurerm_kubernetes_cluster.k8s]
+  depends_on = [azurerm_managed_disk.jenkins_managed_disk, module.jenkins_k8cluster]
 }
