@@ -95,6 +95,18 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
   }
 }
 
+resource "kubernetes_storage_class" "pv" {
+  metadata {
+    name = "slow"
+  }
+  storage_provisioner = "kubernetes.io/azure-disk"
+  parameters = {
+    skuName = "Standard_LRS"
+    location = "centralus"
+    storageAccount =  "manageddisk_dev_jenkins"
+  }
+}
+
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
@@ -111,7 +123,7 @@ resource "helm_release" "trg_jenkins" {
       location: centralus
       storageAccount: manageddisk_dev_jenkins
     EOF
-    ] */
+    ]*/
   set {
     name = "persistence.enabled"
     value = true
@@ -140,10 +152,6 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.apiVersion"
     value = "networking.k8s.io/v1beta1"
   }
-  /* set {
-    name = "master.JCasC.enabled"
-    value = true
-  }
   set {
     name = "master.JCasC.defaultConfig"
     value = true
@@ -152,14 +160,14 @@ resource "helm_release" "trg_jenkins" {
     name = "master.JCasC.securityRealm"
     value = "legacy"
   }
-  set {
-    name = "master.JCasC.authorizationStrategy.loggedInUsersCanDoAnything.allowAnonymousRead"
-    value = false
-  } */
+//  set {
+//    name = "master.JCasC.authorizationStrategy.loggedInUsersCanDoAnything.allowAnonymousRead"
+//    value = false
+//  }
   set {
     name = "master.installPlugins"
     value = "{${join(",", var.jenkins_plugins)}}"
   }
-  depends_on = [azurerm_managed_disk.jenkins_managed_disk, azurerm_kubernetes_cluster.k8s]
+  depends_on = [azurerm_managed_disk.jenkins_managed_disk, kubernetes_storage_class.pv ,azurerm_kubernetes_cluster.k8s]
 }
 
