@@ -1,0 +1,301 @@
+jenkins:
+  Master:
+    ContainerEnv:
+      - name: CASC_VAULT_TOKEN
+        value: "s.g4rFJdIyBUZBq0iWiAlsdTVL"
+      - name: CASC_VAULT_URL
+        value: "http://10.180.0.57:8200"
+      - name: CASC_VAULT_PATHS
+        value: "secret/jenkins"
+      - name: CASC_VAULT_ENGINE_VERSION
+        value: "1"
+    ServiceAnnotations: {
+      "cloud.google.com/load-balancer-type" : "Internal"
+    }
+    InstallPlugins:
+      - configuration-as-code-support:1.10
+      - active-directory:2.13
+      - kubernetes:1.14.9
+      - workflow-job:2.32
+      - workflow-aggregator:2.6
+      - credentials-binding:1.18
+      - git:3.9.3
+      - artifactory:3.2.2
+      - blueocean:1.14.0
+      - prometheus:2.0.0
+      - cucumber-reports:4.5.0
+      - github:1.29.4
+      - github-branch-source:2.4.5
+      - job-dsl:1.71
+      - pipeline-github-lib:1.0
+      - timestamper:1.9
+      - build-monitor-plugin:1.12+build.201809061734
+    #SecretsFilesSecret: jenkins-secrets
+    JCasC:
+      enabled: true
+      PluginVersion: 1.5
+      SupportPluginVersion: 1.5
+      ConfigScripts:
+        ad-settings: |
+          jenkins:
+            securityRealm:
+              activeDirectory:
+                bindPassword: "${BINDPASSWORD}"
+                customDomain: true
+                domains:
+                - bindName: "CN=Vault LDAP,OU=Service Accounts,OU=Technology,DC=mw,DC=com"
+                  bindPassword: "${BINDPASSWORD}"
+                  name: "mw.com"
+                  servers: "mw.dc1.com:3268, mw.dc2.com:3268"
+                  tlsConfiguration: TRUST_ALL_CERTIFICATES
+                groupLookupStrategy: AUTO
+                removeIrrelevantGroups: false
+                startTls: true
+        security: |
+          security:
+            globalJobDslSecurityConfiguration:
+              useScriptSecurity: false # TODO revisit this
+        unclassified: |
+          unclassified:
+            gitHubConfiguration:
+              endpoints:
+              - apiUri: "https://github.maven.com/api/v3"
+                name: "https://github.maven.com"
+            gitHubPluginConfig:
+              configs:
+              - apiUrl: "https://github.maven.com/api/v3/"
+                credentialsId: "jenkins_maven_net_token"
+                name: "https://github.maven.com"
+              hookSecretConfig:
+                credentialsId: "jenkins_maven_net_token"
+            globalLibraries:
+              libraries:
+              - name: "jenkins-scripts"
+                retriever:
+                  modernSCM:
+                    scm:
+                      github:
+                        apiUri: "https://github.maven.com/api/v3"
+                        credentialsId: "jenkins_maven_net_token_for_repo_clones"
+                        id: "36149cb2-8dcf-479d-b689-805e509dfa6f"
+                        repoOwner: "devops"
+                        repository: "jenkins.pipeline-shared"
+              - includeInChangesets: false
+                name: "jenkins.pipeline-shared"
+                retriever:
+                  modernSCM:
+                    scm:
+                      github:
+                        apiUri: "https://github.maven.com/api/v3"
+                        credentialsId: "jenkins_maven_net_token_for_repo_clones"
+                        id: "50ac0571-31da-41c7-876b-3d9198632167"
+                        repoOwner: "devops"
+                        repository: "jenkins.pipeline-shared"
+        credentials-store: |
+          credentials:
+            system:
+              domainCredentials:
+                - credentials:
+                    - string:
+                        scope:    GLOBAL
+                        id:       myvaultsecret
+                        secret: ${BINDPASSWORD}
+                    - usernamePassword:
+                        scope:    GLOBAL
+                        id:       jenkins_maven_net_token_for_repo_clones
+                        username: jenkins_maven_net_token
+                        password: ${github_token}
+                        scope:    GLOBAL
+                    - string:
+                        scope:    GLOBAL
+                        id:       jenkins_maven_net_token
+                        secret: ${github_token}
+        kube-config: |
+          jenkins:
+            clouds:
+            - kubernetes:
+                containerCapStr: "10"
+                jenkinsTunnel: "test-jenkins-agent:50000"
+                jenkinsUrl: "http://test-jenkins:8080"
+                maxRequestsPerHostStr: "32"
+                name: "kubernetes"
+                namespace: "jenkins"
+                serverUrl: "https://kubernetes.default"
+                templates:
+                - label: "test-jenkins-slave "
+                  name: "default"
+                  namespace: "jenkins"
+                  nodeUsageMode: NORMAL
+                  workspaceVolume:
+                    emptyDirWorkspaceVolume:
+                      memory: false
+                  yaml: "apiVersion: v1\nkind: Pod\nmetadata:\n  labels:\n    jenkins/kube-default:\
+                    \ true\n    app: jenkins\n    component: agent\nspec:\n  containers:\n \
+                    \   - name: jnlp\n      image: gcr.io/apps-nonprod/jnlp:latest\n\
+                    \      resources:\n        limits:\n          cpu: 1\n          memory:\
+                    \ 2Gi\n        requests:\n          cpu: 1\n          memory: 2Gi\n    \
+                    \  imagePullPolicy: Always\n      env:\n      - name: POD_IP\n        valueFrom:\n\
+                    \          fieldRef:\n            fieldPath: status.podIP\n      - name:\
+                    \ DOCKER_HOST\n        value: tcp://localhost:2375\n    - name: dind\n \
+                    \     image: docker:18.09.5-dind\n      securityContext:\n        privileged:\
+                    \ true\n      volumeMounts:\n        - name: dind-storage\n          mountPath:\
+                    \ /var/lib/docker\n  volumes:\n    - name: dind-storage\n      emptyDir:\
+                    \ {}"
+
+    Jobs:
+      run-docker-tester: |-
+        <?xml version='1.1' encoding='UTF-8'?>
+        <project>
+          <actions/>
+          <description></description>
+          <keepDependencies>false</keepDependencies>
+          <properties/>
+          <scm class="hudson.scm.NullSCM"/>
+          <canRoam>true</canRoam>
+          <disabled>false</disabled>
+          <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+          <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+          <triggers/>
+          <concurrentBuild>false</concurrentBuild>
+          <builders>
+            <hudson.tasks.Shell>
+              <command>docker ps
+        echo &apos;FROM jenkins/jnlp-slave
+
+        USER root
+        RUN apt-get update
+        RUN apt-get install -y unzip jq
+        RUN apt-get update &amp;&amp; apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common
+        RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+        RUN add-apt-repository &quot;deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable&quot;
+        RUN apt-get update &amp;&amp; apt-get install -y docker-ce
+        RUN export CLOUD_SDK_REPO=&quot;cloud-sdk-$(lsb_release -c -s)&quot; &amp;&amp; \
+            echo &quot;deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main&quot; | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list &amp;&amp; \
+            curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - &amp;&amp; \
+            apt-get update &amp;&amp; apt-get install google-cloud-sdk -y
+        RUN  apt-get install -y kubectl
+        USER jenkins&apos; &gt; Dockerfile
+        docker build .</command>
+            </hudson.tasks.Shell>
+          </builders>
+          <publishers/>
+          <buildWrappers/>
+        </project>
+      job-builder: |-
+        <?xml version='1.1' encoding='UTF-8'?>
+        <project>
+          <actions/>
+          <description></description>
+          <keepDependencies>false</keepDependencies>
+          <properties>
+            <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.29">
+              <autoRebuild>false</autoRebuild>
+              <rebuildDisabled>false</rebuildDisabled>
+            </com.sonyericsson.rebuild.RebuildSettings>
+          </properties>
+          <scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.3">
+            <configVersion>2</configVersion>
+            <userRemoteConfigs>
+              <hudson.plugins.git.UserRemoteConfig>
+                <url>https://github.maven.com/DevOps/jenkins.job-builder.git</url>
+                <credentialsId>jenkins_maven_net_token_for_repo_clones</credentialsId>
+              </hudson.plugins.git.UserRemoteConfig>
+            </userRemoteConfigs>
+            <branches>
+              <hudson.plugins.git.BranchSpec>
+                <name>*/master</name>
+              </hudson.plugins.git.BranchSpec>
+            </branches>
+            <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+            <submoduleCfg class="list"/>
+            <extensions/>
+          </scm>
+          <canRoam>true</canRoam>
+          <disabled>false</disabled>
+          <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+          <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+          <triggers>
+            <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.29.3">
+              <spec></spec>
+            </com.cloudbees.jenkins.GitHubPushTrigger>
+          </triggers>
+          <concurrentBuild>false</concurrentBuild>
+          <builders>
+            <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.71">
+              <targets>jobs.groovy</targets>
+              <usingScriptText>false</usingScriptText>
+              <sandbox>false</sandbox>
+              <ignoreExisting>false</ignoreExisting>
+              <ignoreMissingFiles>false</ignoreMissingFiles>
+              <failOnMissingPlugin>false</failOnMissingPlugin>
+              <unstableOnDeprecation>false</unstableOnDeprecation>
+              <removedJobAction>IGNORE</removedJobAction>
+              <removedViewAction>IGNORE</removedViewAction>
+              <removedConfigFilesAction>IGNORE</removedConfigFilesAction>
+              <lookupStrategy>JENKINS_ROOT</lookupStrategy>
+            </javaposse.jobdsl.plugin.ExecuteDslScripts>
+          </builders>
+          <publishers/>
+          <buildWrappers/>
+        </project>
+      test-docker-build: |-
+        <?xml version='1.1' encoding='UTF-8'?>
+        <flow-definition plugin="workflow-job@2.32">
+          <description></description>
+          <keepDependencies>false</keepDependencies>
+          <properties/>
+          <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.65">
+            <script><![CDATA[
+            def label = "docker-${UUID.randomUUID().toString()}"
+            podTemplate(label: label, yaml: """
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: docker
+                image: docker:1.11
+                command: ['cat']
+                tty: true
+                volumeMounts:
+                - name: dockersock
+                  mountPath: /var/run/docker.sock
+              volumes:
+              - name: dockersock
+                hostPath:
+                  path: /var/run/docker.sock
+            """
+            ) {
+
+              def image = "jenkins/jnlp-slave"
+              node(label) {
+                stage('Build Docker image') {
+                  git 'https://github.com/jenkinsci/docker-jnlp-slave.git'
+
+                  withCredentials([string(credentialsId: 'myvaultsecret', variable: 'MYSECRET')]) {
+                    container('docker') {
+                      sh "echo ${MYSECRET} > secretfile"
+                      sh "cat secretfile"
+                      sh "docker build -t ${image} ."
+                    }
+                  }
+                }
+              }
+            }
+
+            ]]>
+            </script>
+            <sandbox>true</sandbox>
+          </definition>
+          <triggers/>
+          <disabled>false</disabled>
+        </flow-definition>
+
+  rbac:
+    install: true
+    serviceAccountName: jenkins-sa
+
+  Agent:
+    resources:
+      limits:
+        cpu: 2
+        memory: 4Gi
