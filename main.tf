@@ -94,14 +94,34 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
     environment = var.aks_info.aks-dev-jenkins.tag_environment
   }
 }
+resource "kubernetes_storage_class" "pv" {
 
+  metadata {
+
+    name = "slow"
+
+  }
+
+  storage_provisioner = "kubernetes.io/azure-disk"
+
+  parameters = {
+
+    skuName = "Standard_LRS"
+
+    location = "centralus"
+
+    storageAccount =  "manageddisk_dev_jenkins"
+
+  }
+
+}
 resource "helm_release" "trg_jenkins" {
   name    = "build-jenkins"
   repository = "https://charts.jenkins.io"
   chart    = "jenkins"
   version = "2.6.1"
-  /* values = [<<EOF
-    apiVersion: storage.k8s.io/v1
+ /*  values = [<<EOF
+   apiVersion: storage.k8s.io/v1
     kind: StorageClass
     metadata:
       name: slow
@@ -140,7 +160,7 @@ resource "helm_release" "trg_jenkins" {
     name = "master.ingress.apiVersion"
     value = "networking.k8s.io/v1beta1"
   }
-  /* set {
+/*   set {
     name = "master.JCasC.enabled"
     value = true
   }
