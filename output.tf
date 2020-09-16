@@ -27,10 +27,6 @@ output "host" {
   value = module.jenkins_k8cluster.host
 }
 
-output "load_balancer_ip" {
-  value = kubernetes_service.jenkins_service.load_balancer_ingress.0.ip
-}
-
 output "jenkins_managed_disk_id" {
   description = "The ID of the Managed Disk."
   value = azurerm_managed_disk.jenkins_managed_disk.id
