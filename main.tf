@@ -11,7 +11,7 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
   }
   name                 = "manageddisk_dev_jenkins"
   location             = var.aks_info.location
-  resource_group_name  = var.aks_info.resource_group_name
+  resource_group_name  = module.jenkins_k8cluster.managed_rg_name
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
   disk_size_gb         = "8"

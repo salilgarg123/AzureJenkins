@@ -22,7 +22,6 @@ variable "aks_info" {
     sp_description                     = string
     sp_end_date                        = string
     sp_scope                           = string
-    network_scope                      = string
   })
 
   default = {
@@ -43,7 +42,6 @@ variable "aks_info" {
     sp_description                     = "Build Jenkins DEV"
     sp_end_date                        = "2099-01-01T01:02:03Z"
     sp_scope                           = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-aks-dev-001"
-    network_scope = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-app-centralus-001/subnets/snet-dev-build-centralus-001"
   }
 }
 
