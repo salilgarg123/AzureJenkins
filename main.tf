@@ -64,14 +64,15 @@ resource "helm_release" "trg_jenkins" {
     name  = "persistence.enabled"
     value = true
   }
-  set {
-    name  = "persistence.existingClaim"
-    value = "manageddisk_dev_jenkins"
-  }
+
   set {
     name  = "persistence.storageClass"
     value = ""
   } */
+  set {
+    name  = "persistence.existingClaim.storageClassName"
+    value = "manageddisk_dev_jenkins"
+  }
   set {
     name  = "master.ingress.enabled"
     value = true
