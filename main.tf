@@ -60,7 +60,7 @@ resource "helm_release" "trg_jenkins" {
       storageAccount: manageddisk_dev_jenkins
     EOF
     ] */
-  set {
+  /* set {
     name  = "persistence.enabled"
     value = true
   }
@@ -71,7 +71,7 @@ resource "helm_release" "trg_jenkins" {
   set {
     name  = "persistence.storageClass"
     value = ""
-  }
+  } */
   set {
     name  = "master.ingress.enabled"
     value = true
@@ -88,22 +88,6 @@ resource "helm_release" "trg_jenkins" {
     name  = "master.ingress.apiVersion"
     value = "networking.k8s.io/v1beta1"
   }
-  /* set {
-    name = "master.JCasC.enabled"
-    value = true
-  }
-  set {
-    name = "master.JCasC.defaultConfig"
-    value = true
-  }
-  set {
-    name = "master.JCasC.securityRealm"
-    value = "legacy"
-  }
-  set {
-    name = "master.JCasC.authorizationStrategy.loggedInUsersCanDoAnything.allowAnonymousRead"
-    value = false
-  } */
   set {
     name  = "master.installPlugins"
     value = "{${join(",", var.jenkins_plugins)}}"
