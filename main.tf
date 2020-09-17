@@ -21,28 +21,6 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
   }
 }
 
-/* resource "kubernetes_storage_class" "pv" {
-
-  metadata {
-
-    name = "slow"
-
-  }
-
-  storage_provisioner = "kubernetes.io/azure-disk"
-
-  parameters = {
-
-    skuName = "Standard_LRS"
-
-    location = "centralus"
-
-    storageAccount =  "manageddisk_dev_jenkins"
-
-  }
-
-} */
-
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
   repository = "https://charts.jenkins.io"
@@ -63,14 +41,13 @@ resource "helm_release" "trg_jenkins" {
   /* set {
     name  = "persistence.enabled"
     value = true
-  }
-
-  set {
+  }*/
+/*   set {
     name  = "persistence.storageClass"
-    value = ""
+    value = "retain"
   } */
   set {
-    name  = "persistence.existingClaim.storageClassName"
+    name  = "persistence.existingClaim"
     value = "manageddisk_dev_jenkins"
   }
   set {
