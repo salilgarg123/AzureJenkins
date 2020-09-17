@@ -1,50 +1,57 @@
-/* variable "client_id" {}
-variable "client_secret" {}
- */
-variable "agent_count" {
-  default = 3
+variable "management_vnet_id" {
+  description = "The ID of the Virtual Network that should be linked to the DNS Zone."
+  default     = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-mgmt-centralus-001"
 }
 
-variable "ssh_public_key" {
-  default = "~/.ssh/id_rsa.pub"
-}
+variable "aks_info" {
+  type = object({
+    name                               = string
+    location                           = string
+    resource_group_name                = string
+    private_cluster_enabled            = bool
+    node_pool_name                     = string
+    node_pool_count                    = string
+    node_pool_size                     = string
+    node_pool_subnet_id                = string
+    network_profile_load_balancer_sku  = string
+    network_profile_service_cidr       = string
+    network_profile_docker_bridge_cidr = string
+    network_profile_dns_service_ip     = string
+    tag_environment                    = string
+    sp_app_name                        = string
+    sp_description                     = string
+    sp_end_date                        = string
+    sp_scope                           = string
+  })
 
-variable "dns_prefix" {
-  default = "k8stest"
-}
-
-variable cluster_name {
-  default = "aks-dev-jenkins"
-}
-
-variable resource_group_name {
-  default = "rg-aks-dev-001"
-}
-
-variable location {
-  default = "Central US"
-}
-
-variable "aks_config" {
-  type = map(string)
   default = {
-    admin_group    = "cfd65789-4173-4e0a-ac4f-268da9cece28"
-    network_plugin = "azure"
-    network_policy = "azure"
-    dns_prefix     = "optimize-dev-001"
+    name                               = "aks-dev-jenkins"
+    location                           = "centralus"
+    resource_group_name                = "rg-aks-dev-001"
+    private_cluster_enabled            = true
+    node_pool_name                     = "agentpool"
+    node_pool_count                    = "1"
+    node_pool_size                     = "Standard_D2_v2"
+    node_pool_subnet_id                = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-app-centralus-001/subnets/snet-dev-build-centralus-001"
+    network_profile_load_balancer_sku  = "Standard"
+    network_profile_service_cidr       = "10.1.0.0/18"
+    network_profile_docker_bridge_cidr = "172.17.0.1/16"
+    network_profile_dns_service_ip     = "10.1.0.10"
+    tag_environment                    = "Development"
+    sp_app_name                        = "Optimize Insights Build Jenkins DEV"
+    sp_description                     = "Build Jenkins DEV"
+    sp_end_date                        = "2099-01-01T01:02:03Z"
+    sp_scope                           = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-aks-dev-001"
   }
 }
 
-/* variable log_analytics_workspace_name {
-  default = "testLogAnalyticsWorkspaceName"
+variable "jenkins_plugins" {
+  default = [
+    "kubernetes:1.25.7",
+    "workflow-job:2.39",
+    "workflow-aggregator:2.6",
+    "credentials-binding:1.23",
+    "git:4.2.2",
+    "configuration-as-code:1.41"
+  ]
 }
-
-# refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
-variable log_analytics_workspace_location {
-  default = "eastus"
-}
-
-# refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
-variable log_analytics_workspace_sku {
-  default = "PerGB2018"
-} */
