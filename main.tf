@@ -5,7 +5,7 @@ module "jenkins_k8cluster" {
   management_vnet_id = var.management_vnet_id
 }
 
-resource "azurerm_managed_disk" "jenkins_managed_disk" {
+/* resource "azurerm_managed_disk" "jenkins_managed_disk" {
   lifecycle {
     prevent_destroy = false
   }
@@ -19,7 +19,7 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
   tags = {
     environment = var.aks_info.tag_environment
   }
-}
+} */
 
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
