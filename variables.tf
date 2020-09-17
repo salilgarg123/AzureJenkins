@@ -3,14 +3,6 @@ variable "management_vnet_id" {
   default     = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-mgmt-centralus-001"
 }
 
-/* variable "sp_app_id" {
-  default = "dd7a40f7-6ddd-443c-bb7f-2a2b3455891c"
-}
-
-variable "sp_client_secret" {
-  default = "JmpSa8-3VfcO1_WPTaLLiAT-Xpn~3vfJ14"
-} */
-
 variable "aks_info" {
   type = object({
     name                               = string
