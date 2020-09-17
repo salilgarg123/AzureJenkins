@@ -5,22 +5,21 @@ module "jenkins_k8cluster" {
   management_vnet_id = var.management_vnet_id
 }
 
-# resource "azurerm_managed_disk" "jenkins_managed_disk" {
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-#   name                 = "manageddisk_dev_jenkins"
-#   location             = var.aks_info.location
-#   resource_group_name  = module.jenkins_k8cluster.managed_rg_name
-#   storage_account_type = "Standard_LRS"
-#   create_option        = "Empty"
-#   disk_size_gb         = "8"
+resource "azurerm_managed_disk" "jenkins_managed_disk" {
+  lifecycle {
+    prevent_destroy = false
+  }
+  name                 = "manageddisk_dev_jenkins"
+  location             = var.aks_info.location
+  resource_group_name  = module.jenkins_k8cluster.managed_rg_name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = "8"
 
-#   tags = {
-#     environment = var.aks_info.tag_environment
-#   }
-# }
-
+  tags = {
+    environment = var.aks_info.tag_environment
+  }
+}
 
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
@@ -45,12 +44,12 @@ resource "helm_release" "trg_jenkins" {
   }*/
 /*   set {
     name  = "persistence.storageClass"
-    value = "Retain"
+    value = "retain"
   } */
-  # set {
-  #   name  = "persistence.existingClaim"
-  #   value = kubernetes_persistent_volume.example.metadata.0.name
-  # }
+/*   set {
+    name  = "persistence.existingClaim"
+    value = "manageddisk_dev_jenkins"
+  } */
   set {
     name  = "master.ingress.enabled"
     value = true
