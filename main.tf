@@ -7,7 +7,7 @@ module "jenkins_k8cluster" {
 
 resource "azurerm_managed_disk" "jenkins_managed_disk" {
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
   name                 = "manageddisk_dev_jenkins"
   location             = var.aks_info.location
