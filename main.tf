@@ -21,6 +21,27 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
   }
 }
 
+resource "kubernetes_persistent_volume" "example" {
+  metadata {
+    name = "azure-pv-aks"
+  }
+  spec {
+    capacity = {
+      storage = "8Gi"
+    }
+    access_modes = ["ReadWriteMany"]
+    persistent_volume_source {
+      azure_disk  {
+        caching_mode = "ReadWrite"
+        data_disk_uri = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/MC_rg-aks-dev-001_aks-dev-jenkins_centralus/providers/Microsoft.Compute/disks/manageddisk_dev_jenkins"
+        disk_name  = "manageddisk_dev_jenkins"
+      }
+    }
+  }
+}
+
+
+
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
   repository = "https://charts.jenkins.io"
@@ -44,11 +65,11 @@ resource "helm_release" "trg_jenkins" {
   }*/
 /*   set {
     name  = "persistence.storageClass"
-    value = "retain"
+    value = "Retain"
   } */
   set {
     name  = "persistence.existingClaim"
-    value = "manageddisk_dev_jenkins"
+    value = kubernetes_persistent_volume.example.metadata.0.name
   }
   set {
     name  = "master.ingress.enabled"
