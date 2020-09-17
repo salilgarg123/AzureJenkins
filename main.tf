@@ -21,6 +21,28 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
   }
 }
 
+resource "kubernetes_storage_class" "pv" {
+
+  metadata {
+
+    name = "slow"
+
+  }
+
+  storage_provisioner = "kubernetes.io/azure-disk"
+
+  parameters = {
+
+    skuName = "Standard_LRS"
+
+    location = "centralus"
+
+    storageAccount =  "manageddisk_dev_jenkins"
+
+  }
+
+}
+
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
   repository = "https://charts.jenkins.io"
