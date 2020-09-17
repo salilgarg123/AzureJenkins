@@ -5,41 +5,21 @@ module "jenkins_k8cluster" {
   management_vnet_id = var.management_vnet_id
 }
 
-resource "azurerm_managed_disk" "jenkins_managed_disk" {
-  lifecycle {
-    prevent_destroy = false
-  }
-  name                 = "manageddisk_dev_jenkins"
-  location             = var.aks_info.location
-  resource_group_name  = module.jenkins_k8cluster.managed_rg_name
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = "8"
+# resource "azurerm_managed_disk" "jenkins_managed_disk" {
+#   lifecycle {
+#     prevent_destroy = false
+#   }
+#   name                 = "manageddisk_dev_jenkins"
+#   location             = var.aks_info.location
+#   resource_group_name  = module.jenkins_k8cluster.managed_rg_name
+#   storage_account_type = "Standard_LRS"
+#   create_option        = "Empty"
+#   disk_size_gb         = "8"
 
-  tags = {
-    environment = var.aks_info.tag_environment
-  }
-}
-
-resource "kubernetes_persistent_volume" "example" {
-  metadata {
-    name = "azure-pv-aks"
-  }
-  spec {
-    capacity = {
-      storage = "8Gi"
-    }
-    access_modes = ["ReadWriteMany"]
-    persistent_volume_source {
-      azure_disk  {
-        caching_mode = "ReadWrite"
-        data_disk_uri = "/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/MC_rg-aks-dev-001_aks-dev-jenkins_centralus/providers/Microsoft.Compute/disks/manageddisk_dev_jenkins"
-        disk_name  = "manageddisk_dev_jenkins"
-      }
-    }
-  }
-}
-
+#   tags = {
+#     environment = var.aks_info.tag_environment
+#   }
+# }
 
 
 resource "helm_release" "trg_jenkins" {
@@ -67,10 +47,10 @@ resource "helm_release" "trg_jenkins" {
     name  = "persistence.storageClass"
     value = "Retain"
   } */
-  set {
-    name  = "persistence.existingClaim"
-    value = kubernetes_persistent_volume.example.metadata.0.name
-  }
+  # set {
+  #   name  = "persistence.existingClaim"
+  #   value = kubernetes_persistent_volume.example.metadata.0.name
+  # }
   set {
     name  = "master.ingress.enabled"
     value = true
