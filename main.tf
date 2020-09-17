@@ -21,7 +21,7 @@ resource "azurerm_managed_disk" "jenkins_managed_disk" {
   }
 }
 
-resource "kubernetes_storage_class" "pv" {
+/* resource "kubernetes_storage_class" "pv" {
 
   metadata {
 
@@ -41,7 +41,7 @@ resource "kubernetes_storage_class" "pv" {
 
   }
 
-}
+} */
 
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
