@@ -53,7 +53,7 @@ variable "jenkins_plugins" {
     "credentials-binding:1.23",
     "git:4.2.2",
     "configuration-as-code:1.41",
-    "azure-credentials:2.164.3",
+    "azure-credentials:1.6.0",
     "azure-container-service:1.0.2",
     "azure-container-registry-tasks:0.6.3"
   ]
