@@ -43,7 +43,7 @@ resource "helm_release" "trg_jenkins" {
     value = true
   }*/
   set {
-    name  = "persistence.storageClass"
+    name  = "persistence.storageClassName"
     value = "managed-premium-retain"
   } 
    set {
