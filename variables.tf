@@ -52,6 +52,9 @@ variable "jenkins_plugins" {
     "workflow-aggregator:2.6",
     "credentials-binding:1.23",
     "git:4.2.2",
-    "configuration-as-code:1.41"
+    "configuration-as-code:1.41",
+    "azure-credentials:2.164.3",
+    "azure-container-service:1.0.2",
+    "azure-container-registry-tasks:0.6.3"
   ]
 }
