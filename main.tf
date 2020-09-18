@@ -42,14 +42,14 @@ resource "helm_release" "trg_jenkins" {
     name  = "persistence.enabled"
     value = true
   }*/
-/*   set {
+  set {
     name  = "persistence.storageClass"
-    value = "retain"
-  } */
-/*   set {
+    value = "managed-premium-retain"
+  } 
+   set {
     name  = "persistence.existingClaim"
-    value = "manageddisk_dev_jenkins"
-  } */
+    value = "azure-managed-disk"
+  } 
   set {
     name  = "master.ingress.enabled"
     value = true
