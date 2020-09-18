@@ -59,8 +59,3 @@ output "private_dns_zone_id" {
   value       = module.jenkins_k8cluster.private_dns_zone_id
   description = "The ID of the Private DNS Zone Virtual Network Link"
 }
-
-output "jenkins_managed_disk_id" {
-  description = "The ID of the Managed Disk."
-  value       = azurerm_managed_disk.jenkins_managed_disk.id
-}
