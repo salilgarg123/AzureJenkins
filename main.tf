@@ -37,7 +37,6 @@ resource "kubernetes_persistent_volume_claim" "pvc" {
   lifecycle {
     prevent_destroy = true
     ignore_changes = [
-      value,
       metadata
     ]
   }
