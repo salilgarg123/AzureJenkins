@@ -9,6 +9,16 @@ module "jenkins_k8cluster" {
   management_vnet_id = var.management_vnet_id
 }
 
+data "azurerm_container_registry" "trg-acr" {
+  name                = var.container_registry_name
+  resource_group_name = var.container_registry_resource_group_name
+}
+
+resource "azurerm_role_assignment" "aks_sp_container_registry" {
+  scope                = data.azurerm_container_registry.trg-acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = module.jenkins_k8cluster.sp_object_id
+}
 
 resource "kubernetes_persistent_volume_claim" "pvc" {
   metadata {
@@ -23,6 +33,13 @@ resource "kubernetes_persistent_volume_claim" "pvc" {
       }
     }
     storage_class_name = var.storageclass
+  }
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes = [
+      value,
+      metadata
+    ]
   }
 }
 

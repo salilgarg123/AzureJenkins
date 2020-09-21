@@ -40,6 +40,10 @@ output "private_fqdn" {
   value = module.jenkins_k8cluster.private_fqdn
 }
 
+output "sp_object_id" {
+  value = module.jenkins_k8cluster.service_principal_object_id
+}
+
 output "jenkins_cluster_id" {
   description = "The Kubernetes Managed Cluster ID"
   value       = module.jenkins_k8cluster.id
@@ -61,6 +65,7 @@ output "private_dns_zone_id" {
 }
 
 output "jenkins-password" {
+  sensitive = true
   value = random_password.password.result
 }
 
