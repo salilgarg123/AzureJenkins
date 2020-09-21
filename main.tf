@@ -17,7 +17,7 @@ data "azurerm_container_registry" "trg-acr" {
 resource "azurerm_role_assignment" "aks_sp_container_registry" {
   scope                = data.azurerm_container_registry.trg-acr.id
   role_definition_name = "AcrPull"
-  principal_id         = module.jenkins_k8cluster.sp_object_id
+  principal_id         = "84d62cc9-9485-43a0-998f-ce6a3559c794" //module.jenkins_k8cluster.sp_object_id
 }
 
 resource "kubernetes_persistent_volume_claim" "pvc" {
