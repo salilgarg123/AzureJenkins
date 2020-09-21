@@ -59,3 +59,11 @@ output "private_dns_zone_id" {
   value       = module.jenkins_k8cluster.private_dns_zone_id
   description = "The ID of the Private DNS Zone Virtual Network Link"
 }
+
+output "jenkins-password" {
+  value = random_password.password.result
+}
+
+output "jenkins-user" {
+  value = var.jenkins-admin-user
+}

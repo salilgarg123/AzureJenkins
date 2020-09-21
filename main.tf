@@ -1,3 +1,7 @@
+resource "random_password" "password" {
+  length = 12
+}
+
 module "jenkins_k8cluster" {
   source = "git@bitbucket.org:mavenwave/trg-terraform-build-aks"
   //source            = "..//trg-terraform-build-aks"
@@ -22,6 +26,18 @@ resource "kubernetes_persistent_volume_claim" "pvc" {
   }
 }
 
+resource "kubernetes_secret" "jenkins-secret" {
+  metadata {
+    name = "jenkins-admin"
+  }
+  data = {
+    jenkins-admin-user = var.jenkins-admin-user
+    jenkins-admin-password = random_password.password.result
+  }
+
+  type = "kubernetes.io/basic-auth"
+}
+
 resource "kubernetes_storage_class" "sc" {
   metadata {
     name = var.storageclass
@@ -36,6 +52,11 @@ resource "helm_release" "trg_jenkins" {
   repository = "https://charts.jenkins.io"
   chart      = "jenkins"
   version    = "2.6.1"
+
+  set{
+    name = "master.admin.existingSecret"
+    value =  kubernetes_secret.jenkins-secret.metadata.name
+  }
 
    set {
     name  = "persistence.existingClaim"

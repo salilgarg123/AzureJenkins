@@ -68,3 +68,8 @@ variable "storageclass" {
   type = string
   default = "managed-premium-retain"
 }
+
+variable "jenkins-admin-user" {
+  type = string
+  default = "admin"
+}
