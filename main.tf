@@ -36,15 +36,10 @@ resource "helm_release" "trg_jenkins" {
   repository = "https://charts.jenkins.io"
   chart      = "jenkins"
   version    = "2.6.1"
-  
-//  set {
-//    name  = "persistence.storageClass"
-//    value = "managed-premium-retain"
-//  }
 
    set {
     name  = "persistence.existingClaim"
-    value = "azure-managed-disk"
+    value = var.pvc
    } 
 
   set {
