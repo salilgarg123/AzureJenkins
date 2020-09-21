@@ -78,10 +78,10 @@ variable "jenkins-admin-user" {
 
 variable "container_registry_name" {
   type = string
-  default = "OptimizeInsightsACRProd"
+  default = "OptimizeInsightsACRDev"
 }
 
 variable "container_registry_resource_group_name" {
   type = string
-  default = "rg-terraform-prod-001"
+  default = "rg-aks-dev-001"
 }
