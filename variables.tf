@@ -55,7 +55,9 @@ variable "jenkins_plugins" {
     "configuration-as-code:1.41",
     "azure-credentials:1.6.0",
     "azure-container-service:1.0.2",
-    "azure-container-registry-tasks:0.6.3"
+    "azure-container-registry-tasks:0.6.3",
+    "strict-crumb-issuer:2.1.0",
+    "monitoring:1.85.0" 
   ]
 }
 
@@ -72,4 +74,14 @@ variable "storageclass" {
 variable "jenkins-admin-user" {
   type = string
   default = "admin"
+}
+
+variable "container_registry_name" {
+  type = string
+  default = "OptimizeInsightsACRProd"
+}
+
+variable "container_registry_resource_group_name" {
+  type = string
+  default = "rg-terraform-prod-001"
 }
