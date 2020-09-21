@@ -35,7 +35,6 @@ resource "kubernetes_secret" "jenkins-secret" {
     jenkins-admin-password = random_password.password.result
   }
 
-  type = "kubernetes.io/basic-auth"
 }
 
 resource "kubernetes_storage_class" "sc" {
@@ -55,7 +54,7 @@ resource "helm_release" "trg_jenkins" {
 
   set{
     name = "master.admin.existingSecret"
-    value =  kubernetes_secret.jenkins-secret.metadata.name
+    value =  kubernetes_secret.jenkins-secret.metadata[0].name
   }
 
    set {
