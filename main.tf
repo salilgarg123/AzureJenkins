@@ -4,44 +4,39 @@ module "jenkins_k8cluster" {
   aks_info           = var.aks_info
   management_vnet_id = var.management_vnet_id
 }
-
-/* resource "azurerm_managed_disk" "jenkins_managed_disk" {
-  lifecycle {
-    prevent_destroy = false
+resource "kubernetes_persistent_volume_claim" "example" {
+  metadata {
+    name = "exampleclaimname"
   }
-  name                 = "manageddisk_dev_jenkins"
-  location             = var.aks_info.location
-  resource_group_name  = module.jenkins_k8cluster.managed_rg_name
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = "8"
-
-  tags = {
-    environment = var.aks_info.tag_environment
+  spec {
+    access_modes = ["ReadWriteMany"]
+    resources {
+      requests = {
+        storage = "5Gi"
+      }
+    }
+    volume_name = "${kubernetes_persistent_volume.example.metadata.0.name}"
   }
-} */
+}
+
+resource "kubernetes_storage_class" "example" {
+  metadata {
+    name = "terraform-example"
+  }
+  storage_provisioner = "kubernetes.io/gce-pd"
+  reclaim_policy      = "Retain"
+  parameters = {
+    type = "pd-standard"
+  }
+  mount_options = ["file_mode=0700", "dir_mode=0777", "mfsymlinks", "uid=1000", "gid=1000", "nobrl", "cache=none"]
+}
 
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
   repository = "https://charts.jenkins.io"
   chart      = "jenkins"
   version    = "2.6.1"
-  /* values = [<<EOF
-    apiVersion: storage.k8s.io/v1
-    kind: StorageClass
-    metadata:
-      name: slow
-    provisioner: kubernetes.io/azure-disk
-    parameters:
-      skuName: Standard_LRS
-      location: centralus
-      storageAccount: manageddisk_dev_jenkins
-    EOF
-    ] */
-  /* set {
-    name  = "persistence.enabled"
-    value = true
-  }*/
+  
   set {
     name  = "persistence.storageClass"
     value = "managed-premium-retain"
@@ -49,7 +44,7 @@ resource "helm_release" "trg_jenkins" {
    set {
     name  = "persistence.existingClaim"
     value = "azure-managed-disk"
-  } 
+   } 
   
   set {
     name  = "master.ingress.enabled"
