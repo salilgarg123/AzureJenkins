@@ -58,3 +58,13 @@ variable "jenkins_plugins" {
     "azure-container-registry-tasks:0.6.3"
   ]
 }
+
+variable "pvc" {
+  type = string
+  default = "azure-managed-disk"
+}
+
+variable "storageclass" {
+  type = string
+  default = "managed-premium-retain"
+}

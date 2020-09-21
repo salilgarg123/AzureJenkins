@@ -5,52 +5,48 @@ module "jenkins_k8cluster" {
   management_vnet_id = var.management_vnet_id
 }
 
-/* resource "azurerm_managed_disk" "jenkins_managed_disk" {
-  lifecycle {
-    prevent_destroy = false
-  }
-  name                 = "manageddisk_dev_jenkins"
-  location             = var.aks_info.location
-  resource_group_name  = module.jenkins_k8cluster.managed_rg_name
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = "8"
 
-  tags = {
-    environment = var.aks_info.tag_environment
+resource "kubernetes_persistent_volume_claim" "pvc" {
+  metadata {
+    name = var.pvc
   }
-} */
+  spec {
+    access_modes = ["ReadWriteOnce"]
+
+    resources {
+      requests = {
+        storage = "8Gi"
+      }
+    }
+    storage_class_name = var.storageclass
+  }
+}
+
+resource "kubernetes_storage_class" "sc" {
+  metadata {
+    name = var.storageclass
+  }
+  storage_provisioner = "kubernetes.io/azure-disk"
+  reclaim_policy      = "Retain"
+  allow_volume_expansion = false
+}
 
 resource "helm_release" "trg_jenkins" {
   name       = "build-jenkins"
   repository = "https://charts.jenkins.io"
   chart      = "jenkins"
   version    = "2.6.1"
-  /* values = [<<EOF
-    apiVersion: storage.k8s.io/v1
-    kind: StorageClass
-    metadata:
-      name: slow
-    provisioner: kubernetes.io/azure-disk
-    parameters:
-      skuName: Standard_LRS
-      location: centralus
-      storageAccount: manageddisk_dev_jenkins
-    EOF
-    ] */
-  /* set {
-    name  = "persistence.enabled"
-    value = true
-  }*/
-  set {
-    name  = "persistence.storageClass"
-    value = "managed-premium-retain"
-  } 
-//   set {
-//    name  = "persistence.existingClaim"
-//    value = "azure-managed-disk"
+  
+//  set {
+//    name  = "persistence.storageClass"
+//    value = "managed-premium-retain"
 //  }
-    
+
+   set {
+    name  = "persistence.existingClaim"
+    value = "azure-managed-disk"
+   } 
+
   set {
     name  = "master.ingress.enabled"
     value = true
