@@ -98,5 +98,10 @@ resource "helm_release" "trg_jenkins" {
     name  = "master.installPlugins"
     value = "{${join(",", var.jenkins_plugins)}}"
   }
+
+  set {
+    name  = "master.numExecutors"
+    value = "2"
+  }
   depends_on = [module.jenkins_k8cluster]
 }
