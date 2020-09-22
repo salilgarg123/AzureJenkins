@@ -101,7 +101,7 @@ resource "helm_release" "trg_jenkins" {
 
   set {
     name  = "master.numExecutors"
-    value = "2"
+    value =  5
   }
 
   set {
