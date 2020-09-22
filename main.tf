@@ -101,7 +101,7 @@ resource "helm_release" "trg_jenkins" {
 
   set {
     name  = "master.numExecutors"
-    value = "5"
+    value = "2"
   }
   depends_on = [module.jenkins_k8cluster]
 }
