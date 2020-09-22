@@ -103,5 +103,10 @@ resource "helm_release" "trg_jenkins" {
     name  = "master.numExecutors"
     value = "2"
   }
+
+  set {
+    name  = "master.executorMode"
+    value = "EXCLUSIVE"
+  }
   depends_on = [module.jenkins_k8cluster]
 }
