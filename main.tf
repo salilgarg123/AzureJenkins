@@ -98,5 +98,16 @@ resource "helm_release" "trg_jenkins" {
     name  = "master.installPlugins"
     value = "{${join(",", var.jenkins_plugins)}}"
   }
-  depends_on = [module.jenkins_k8cluster]
+
+  set {
+    name  = "master.numExecutors"
+    value =  5
+  }
+
+  set {
+    name  = "master.executorMode"
+    value = "EXCLUSIVE"
+  }
+
+   depends_on = [module.jenkins_k8cluster]
 }
