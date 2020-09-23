@@ -1,6 +1,9 @@
 ## Jenkins
 
-The AKS creates its own resource group of the format MC_<aks-resource-group>_<aks-name>_<location>which will host the private endpoint namedkube-apiserverand a private DNS Zone of the format <uuid>.privatelink.<location>.azmk8s.ioto resolve the private API server fqdn. To allow our bastion Vnet to resolve the server url to the private IP, we should add a Vnet Link within the private DNS Zone. The terraform functions help us slice and extract the information and create a link.
+Get  username and password to connect to Jenkins:
+kubectl --namespace jenkins get secret jenkins-operator-credentials-jenkins -o 'jsonpath={.data.user}' | base64 -d
+kubectl --namespace jenkins get secret jenkins-operator-credentials-jenkins -o 'jsonpath={.data.password}' | base64 -d
+
 
 create a VM for our bastionand use the Azure Bastion Host to securely ssh into the VMs.
 
