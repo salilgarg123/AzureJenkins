@@ -108,5 +108,11 @@ resource "helm_release" "trg_jenkins" {
     name  = "master.executorMode"
     value = "EXCLUSIVE"
   }
+
+  set {
+    jenkinsUser = "jenkins"
+    jenkinsPassword = "jenkins12345"
+
+  }
      depends_on = [module.jenkins_k8cluster]
 }
