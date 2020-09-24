@@ -109,8 +109,8 @@ resource "helm_release" "trg_jenkins" {
     value = "EXCLUSIVE"
   }
   set {
-    name = "master.securityRealm class"
-    value = "hudson.security.LegacySecurityRealm"
+    name = "master.securityRealm"
+    value = "securityRealm class="hudson.security.HudsonPrivateSecurityRealm"
   }
  
      depends_on = [module.jenkins_k8cluster]
