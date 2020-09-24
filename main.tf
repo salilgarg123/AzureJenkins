@@ -109,9 +109,6 @@ resource "helm_release" "trg_jenkins" {
     value = "EXCLUSIVE"
   }
 
-  set {
-    name = jenkinsUser.jenkins
-    value = jenkinsPassword.password
-  }
+ 
      depends_on = [module.jenkins_k8cluster]
 }
