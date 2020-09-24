@@ -110,8 +110,8 @@ resource "helm_release" "trg_jenkins" {
   }
 
   set {
-    name = jenkinsUser
-    value = jenkinsPassword
+    name = jenkinsUser.jenkins
+    value = jenkinsPassword.password
   }
      depends_on = [module.jenkins_k8cluster]
 }
