@@ -108,6 +108,10 @@ resource "helm_release" "trg_jenkins" {
     name  = "master.executorMode"
     value = "EXCLUSIVE"
   }
-
-   depends_on = [module.jenkins_k8cluster]
+  set {
+    name = "master.securityRealm"
+    value = "hudson.security.HudsonPrivateSecurityRealm"
+  }
+ 
+     depends_on = [module.jenkins_k8cluster]
 }
