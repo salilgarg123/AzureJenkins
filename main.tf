@@ -108,6 +108,10 @@ resource "helm_release" "trg_jenkins" {
     name  = "master.executorMode"
     value = "EXCLUSIVE"
   }
+  set {
+    name = "enableXmlConfig"
+    value = "true"
+  }
   values = [
     "${file("values.yml")}"
   ]
