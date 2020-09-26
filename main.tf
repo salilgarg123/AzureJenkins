@@ -112,6 +112,10 @@ resource "helm_release" "trg_jenkins" {
     name = "master.enableXmlConfig"
     value = "true"
   }
+  set {
+    name="master.JCasC.enabled"
+    value= "false"
+  }
   values = [
     "${file("values.yml")}"
   ]
