@@ -109,7 +109,7 @@ resource "helm_release" "trg_jenkins" {
     value = "EXCLUSIVE"
   }
   set {
-    name = "enableXmlConfig"
+    name = "master.enableXmlConfig"
     value = "true"
   }
   values = [
