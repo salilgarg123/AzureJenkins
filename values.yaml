@@ -1,7 +1,7 @@
 
 master:
   
-  securityRealm: |-
+
      
  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
     <disableSignup>false</disableSignup>
@@ -9,7 +9,7 @@ master:
  </securityRealm>
  
  
-   authorizationStrategy: |-
+ 
      
   <authorizationStrategy class="com.michelin.cio.hudson.plugins.rolestrategy.RoleBasedAuthorizationStrategy">
     <roleMap type="globalRoles">
