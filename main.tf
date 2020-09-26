@@ -109,7 +109,7 @@ resource "helm_release" "trg_jenkins" {
     value = "EXCLUSIVE"
   }
   values = [
-    "${file("values.yaml")}"
+    "${file("values.yml")}"
   ]
  
      depends_on = [module.jenkins_k8cluster]
