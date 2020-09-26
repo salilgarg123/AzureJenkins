@@ -1,22 +1,58 @@
 ## Jenkins
 
-The AKS creates its own resource group of the format MC_<aks-resource-group>_<aks-name>_<location>which will host the private endpoint namedkube-apiserverand a private DNS Zone of the format <uuid>.privatelink.<location>.azmk8s.ioto resolve the private API server fqdn. To allow our bastion Vnet to resolve the server url to the private IP, we should add a Vnet Link within the private DNS Zone. The terraform functions help us slice and extract the information and create a link.
+The [trg-terraform-build-aks](https://bitbucket.org/mavenwave/trg-terraform-build-aks/src/master/) module is implemented to create a private AKS cluster that is linked to the Private DNS zone. The Jenkins is installed on this private cluster using the [Jenkins Helm](https://github.com/jenkinsci/helm-charts/tree/main/charts/jenkins). Jenkins chart installs a Jenkins server which spawns agents on Kubernetes utilizing the Jenkins Kubernetes plugin.
 
-create a VM for our bastionand use the Azure Bastion Host to securely ssh into the VMs.
+The AcrPull role is assigned to the Service Principal so that the Jenkins jobs can pull and push the Docker images generated as output from the job build.
 
-To get the kubeconfig, you can do an az login and az aks get-credentials . Check the docs for more information. The below gist explains the steps to check the connection inside the VM after logging in through the Azure Bastion.
+The Persistent volume is created separately and then attached to Jenkins. It can be retained even if Jenkins resource is destroyed and reattached when Jenkins is reinstalled.
 
-**Plugins**
-git for source control
-Azure Credentials plugin for connecting securely
-Azure VM Agents plugin for elastic build, test and continuous integration
-Azure Storage plugin for storing artifacts
-Azure CLI to deploy apps using scripts
+Connect to the trg-dev-bastion-001 bastion VM to get username and password, and decode base64 to connect to Jenkins:
+kubectl edit secrets jenkins-admin
 
+## Requirements
 
-Azure Disk storage class
-storageaccounttype: Azure storage account Sku tier. Default is empty.
-kind: Possible values are shared (default), dedicated, and managed. When kind is shared, all unmanaged disks are created in a few shared storage accounts in the same resource group as the cluster. When kind is dedicated, a new dedicated storage account will be created for the new unmanaged disk in the same resource group as the cluster. When kind is managed, all managed disks are created in the same resource group as the cluster.
-resourceGroup: Specify the resource group in which the Azure disk will be created. It must be an existing resource group name. If it is unspecified, the disk will be placed in the same resource group as the current Kubernetes cluster.
-Premium VM can attach both Standard_LRS and Premium_LRS disks, while Standard VM can only attach Standard_LRS disks.
-Managed VM can only attach managed disks and unmanaged VM can only attach unmanaged disks.
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12 |
+| azurerm | =2.10 |
+
+## Providers
+
+azurerm 
+helm
+kubernetes
+random
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| aks\_info |  The values required to create AKS cluster and service principal. | object | no |
+| container\_registry\_name | n/a | `string` | `"OptimizeInsightsACRDev"` | no |
+| container\_registry\_resource\_group\_name | n/a | `string` | `"rg-aks-dev-001"` | no |
+| jenkins-admin-user | n/a | `string` | `"admin"` | no |
+| jenkins\_plugins | n/a | `list` |  | no |
+| management\_vnet\_id | The ID of the Virtual Network that should be linked to the DNS Zone. | `string` | `"/subscriptions/63a4467b-b46e-4f35-b623-1e5b076ef28c/resourceGroups/rg-internalnetwork-dev-001/providers/Microsoft.Network/virtualNetworks/vnet-dev-internal-mgmt-centralus-001"` | no |
+| pvc | n/a | `string` | `"azure-managed-disk"` | no |
+| storageclass | n/a | `string` | `"managed-premium-retain"` | no |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| client\_certificate | Base64 encoded public certificate used by clients to authenticate to the Kubernetes cluster |
+| client\_key | Raw Kubernetes config to be used by kubectl |
+| cluster\_ca\_certificate | Base64 encoded public CA certificate used as the root of trust for the Kubernetes cluster. |
+| cluster\_password | A password or token used to authenticate to the Kubernetes cluster. |
+| cluster\_username | A username used to authenticate to the Kubernetes cluster. |
+| host | The Kubernetes cluster server host. |
+| jenkins-password | n/a |
+| jenkins-user | n/a |
+| jenkins\_cluster\_id | The Kubernetes Managed Cluster ID |
+| kube\_config | Kubernetes config |
+| kube\_config\_raw | Raw Kubernetes config to be used by kubectl |
+| managed\_rg\_name | Resource Group name managed by Microsoft when creating the cluster |
+| private\_dns\_zone\_id | The ID of the Private DNS Zone Virtual Network Link |
+| private\_dns\_zone\_name | Zone Name for the Private DNS Zone generated by private AKS |
+| private\_fqdn | The Kubernetes Managed Cluster ID |
+| sp\_object\_id | The Service Principal Object ID |
