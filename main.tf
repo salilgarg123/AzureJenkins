@@ -112,6 +112,10 @@ resource "helm_release" "trg_jenkins" {
     name = "master.enableXmlConfig"
     value = "true"
   }
+  set {
+    name = "sidecars.overwriteConfig"
+    value ="true"
+  }
  
   values = [
     "${file("values.yml")}"
