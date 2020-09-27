@@ -6,9 +6,7 @@ master:
     </securityRealm>
   # Allows to configure different AuthorizationStrategy using Jenkins XML
   authorizationStrategy: |-
-    <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
-      <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
-    </authorizationStrategy>
+   
     <authorizationStrategy class="com.michelin.cio.hudson.plugins.rolestrategy.RoleBasedAuthorizationStrategy">
       <roleMap type="globalRoles">
         <role name="admin" pattern=".*">
