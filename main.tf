@@ -121,5 +121,5 @@ resource "helm_release" "trg_jenkins" {
     templatefile("${path.root}/values.yml", { trgclient = var.trgclient })
   ]
  
-//     depends_on = [module.jenkins_k8cluster]
+     depends_on = [module.jenkins_k8cluster]
 }

@@ -88,5 +88,15 @@ variable "container_registry_resource_group_name" {
 
 variable "trgclient" {
   type = list
-  default = [ "parul" ]
+  default = [ "parul" , "test"]
+}
+
+variable "trgdev" {
+  type = list
+  default = [ "trgdev"]
+}
+
+variable "admin" {
+  type = list
+  default = [ "salil"]
 }
