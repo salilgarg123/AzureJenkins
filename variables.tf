@@ -85,3 +85,8 @@ variable "container_registry_resource_group_name" {
   type = string
   default = "rg-aks-dev-001"
 }
+
+variable "trgclient" {
+  type = list
+  default = [ "parul" ]
+}

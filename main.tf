@@ -1,7 +1,13 @@
 resource "random_password" "password" {
   length = 12
 }
+data "template_file" "config-yaml" {
+  template = file("values.yml")
+  vars = {
+    trgclient   = var.trgclient
+  }
 
+}
 module "jenkins_k8cluster" {
   source = "git@bitbucket.org:mavenwave/trg-terraform-build-aks"
   //source            = "..//trg-terraform-build-aks"
@@ -118,8 +124,8 @@ resource "helm_release" "trg_jenkins" {
   }
  
   values = [
-    "${file("values.yml")}"
+    data.template_file.config-yaml.rendered
   ]
  
-     depends_on = [module.jenkins_k8cluster]
+     depends_on = [module.jenkins_k8cluster , data.template_file.config-yaml]
 }

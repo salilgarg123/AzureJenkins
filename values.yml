@@ -65,7 +65,9 @@ master:
             <permission>hudson.model.Item.Discover</permission>
           </permissions>
           <assignedSIDs>
-            <sid>parul</sid>
+            %{ for user in trgclient ~}
+            <sid>${user}</sid>
+            %{ endfor ~}
           </assignedSIDs>
         </role>
       </roleMap>
