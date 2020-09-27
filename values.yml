@@ -53,7 +53,7 @@ master:
             <sid>salil</sid>
           </assignedSIDs>
         </role>
-        <role name="trg-client" pattern="trg.*">
+        <role name="trg-client" pattern=".*">
           <permissions>
             <permission>hudson.model.Hudson.Read</permission>
             <permission>hudson.model.Item.Read</permission>
@@ -65,9 +65,9 @@ master:
             <permission>hudson.model.Item.Discover</permission>
           </permissions>
           <assignedSIDs>
-            %{ for user in trgclient ~}
+            %{~ for user in trgclient ~}
             <sid>${user}</sid>
-            %{ endfor ~}
+            %{~ endfor ~}
           </assignedSIDs>
         </role>
       </roleMap>
