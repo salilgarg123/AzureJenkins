@@ -64,6 +64,9 @@ master:
             <permission>hudson.model.Item.Configure</permission>
             <permission>hudson.model.Item.Discover</permission>
           </permissions>
+          <assignedSIDs>
+            <sid>parul</sid>
+          </assignedSIDs>
         </role>
       </roleMap>
       <roleMap type="slaveRoles"/>
