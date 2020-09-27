@@ -1,7 +1,7 @@
 master:
   securityRealm: |-
     <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
-      <disableSignup>false</disableSignup>
+      <disableSignup>true</disableSignup>
       <enableCaptcha>false</enableCaptcha>
     </securityRealm>
   # Allows to configure different AuthorizationStrategy using Jenkins XML
