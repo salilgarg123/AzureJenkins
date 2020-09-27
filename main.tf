@@ -113,7 +113,7 @@ resource "helm_release" "trg_jenkins" {
     value = "true"
   }
   set {
-    name = "master.sidecars.overwriteConfig"
+    name = "master.overwriteConfig"
     value ="true"
   }
  
